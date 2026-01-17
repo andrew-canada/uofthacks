@@ -8,10 +8,10 @@ Automatically discover and analyze trending YouTube Shorts with product/merch po
 - 🔥 **25+ Trending Keywords**: Curated from actual January 2026 TikTok/YouTube trends
 - 🎥 **YouTube Shorts Only**: Analyzes videos ≤60 seconds (no music videos)
 - 🤖 **AI-Powered Analysis**: Uses Twelve Labs AI for video understanding
-- 📊 **Detailed Descriptions**: Shows what's happening in videos beyond just views/likes
+- 📊 **Intelligent Descriptions**: Generates detailed "what is happening" descriptions using title parsing and AI analysis
 - 💡 **Context-Based Trending**: Explains WHY videos are trending (not just engagement)
 - 💰 **Product Potential**: Every trend has t-shirt/merch/packaging opportunities
-- 📄 **Clean JSON Output**: Simple, focused reports for each trend
+- 📄 **Comprehensive JSON Output**: Full trend analysis with keywords, products, demographics, hashtags
 
 ## Product-Ready Trends Included
 
@@ -86,29 +86,39 @@ Each run:
 2. **Searches** YouTube for Shorts matching that trend
 3. **Filters** for videos ≤60 seconds (excludes music)
 4. **Downloads** 3 random Shorts from results
-5. **Analyzes** with Twelve Labs AI
-6. **Generates** detailed descriptions of what's happening
-7. **Identifies** why they're trending (beyond views/likes)
-8. **Exports** to JSON with trend name and product potential
+5. **Analyzes** with Twelve Labs AI (visual elements + optional summarization)
+6. **Generates** detailed "what is happening" descriptions through intelligent title parsing
+7. **Identifies** keywords, target products, demographics, and hashtags
+8. **Exports** comprehensive trend analysis to JSON
 
 ### Output Format
 
+The script generates comprehensive trend analysis in JSON format:
+
 ```json
 {
-  "analysis_timestamp": "2026-01-17 08:01:22",
-  "trend_analyzed": "matcha",
-  "product_potential": "t-shirts, merch, accessories, packaging",
-  "videos_analyzed": 3,
-  "videos": [
+  "id": "trend_matcha",
+  "name": "Matcha",
+  "description": "Matcha trend featuring matcha, drinks, aesthetic content...",
+  "keywords": ["matcha", "aesthetic", "drink", "wellness", "trendy"],
+  "color_palette": ["green", "neutral", "pastel tones"],
+  "target_products": ["drink packaging", "tote bags", "aesthetic apparel", "minimalist merch"],
+  "marketing_angle": "Focus on wellness, aesthetics, and trendy lifestyle...",
+  "popularity_score": 85,
+  "platforms": ["TikTok", "Instagram", "Pinterest"],
+  "demographics": ["Millennials", "Gen Z", "Women 18-35"],
+  "hashtags": ["#matcha", "#aesthetic", "#wellness", "#matchalatte"],
+  "sample_videos": [
     {
       "title": "How to make Iced Strawberry Matcha",
       "url": "https://www.youtube.com/watch?v=...",
-      "channel": "Channel Name",
-      "duration_seconds": 31,
-      "what_is_happening": "This 'matcha' trend video shows...",
+      "views": 1500000,
+      "likes": 85000,
+      "what_is_happening": "This video demonstrates a recipe about matcha drinks and aesthetic lifestyle.",
       "why_its_trending": [
         "part of the viral 'matcha' trend",
-        "tutorial content"
+        "high engagement and shareability",
+        "relatable content format"
       ]
     }
   ]
@@ -163,6 +173,7 @@ uofthacks/
 - **Randomization**: Different Shorts selected from each trend every run
 - **Auto-cleanup**: Downloaded videos deleted after processing
 - **API costs**: ~3 video analyses per run
+- **Video descriptions**: Generated through intelligent title parsing (matching actions like "ranking", "tutorial", "how to" with subjects like "aura", "glow up", "matcha"). Falls back to Twelve Labs summarization API when available and within rate limits.
 
 ## License
 

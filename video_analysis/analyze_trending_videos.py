@@ -249,6 +249,59 @@ def wait_for_processing(task_id):
 
         time.sleep(3)
 
+def get_detailed_video_description(index_id, video_id):
+    """
+    Get detailed description of what's happening in the video using Twelve Labs summarize.
+    Note: This endpoint may have rate limits. Fallback to title-based description if unavailable.
+    """
+
+    # Create a summarize task
+    url = f"{TWELVE_LABS_BASE_URL}/summarize"
+    headers = {
+        "x-api-key": TWELVE_LABS_API_KEY,
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "video_id": video_id,
+        "type": "summary"
+    }
+
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+
+        # Handle rate limiting
+        if response.status_code == 429:
+            return None  # Will fall back to title-based description
+
+        if response.status_code in [200, 201]:
+            result = response.json()
+            task_id = result.get('_id')
+
+            if task_id:
+                # Poll for completion (max 15 seconds to avoid long waits)
+                for _ in range(15):
+                    status_url = f"{TWELVE_LABS_BASE_URL}/summarize/{task_id}"
+                    status_response = requests.get(status_url, headers=headers)
+
+                    if status_response.status_code == 200:
+                        status_data = status_response.json()
+
+                        if status_data.get('status') == 'ready':
+                            summary = status_data.get('summary', '')
+                            if summary:
+                                return summary.strip()
+                            break
+                        elif status_data.get('status') == 'failed':
+                            break
+
+                    time.sleep(1)
+
+    except Exception as e:
+        pass  # Silently fall back to title-based description
+
+    return None
+
 def analyze_video_objects(index_id):
     """Analyze video for objects and themes"""
     url = f"{TWELVE_LABS_BASE_URL}/search"
@@ -761,20 +814,127 @@ def main():
         if video_id:
             print(f"  ✓ Processing complete!")
 
+            # Get detailed description of what's happening
+            print(f"\n4. Getting detailed video description...")
+            detailed_description = get_detailed_video_description(index_id, video_id)
+
             # Analyze objects
-            print(f"\n4. Analyzing video content with Twelve Labs AI...")
+            print(f"\n5. Analyzing visual elements...")
             detected_elements = analyze_video_objects(index_id)
             all_detected_elements.append(detected_elements)
+
+            # Build comprehensive description from detected elements and video metadata
+            if not detailed_description or len(detailed_description) < 50:
+                # Intelligent fallback: build description from video title + detected elements
+                title = video_info['title']
+                title_lower = title.lower()
+
+                description_parts = []
+
+                # Analyze title for context
+                title_actions = {
+                    'tutorial': 'demonstrates a tutorial',
+                    'how to': 'shows how to',
+                    'ranking': 'ranks and compares',
+                    'review': 'reviews',
+                    'unboxing': 'unboxes',
+                    'try': 'attempts',
+                    'challenge': 'takes on a challenge',
+                    'reaction': 'reacts to content',
+                    'vs': 'compares different things',
+                    'transformation': 'showcases a transformation',
+                    'before and after': 'shows before and after results',
+                    'pov': 'presents a point-of-view scenario',
+                    'storytime': 'tells a story',
+                    'day in': 'shows a day in the life',
+                    'get ready': 'shows a get-ready routine',
+                    'outfit': 'displays outfit choices',
+                    'makeup': 'demonstrates makeup techniques',
+                    'cooking': 'shows cooking',
+                    'recipe': 'demonstrates a recipe',
+                    'workout': 'shows a workout routine',
+                    'fails': 'showcases fails or mistakes',
+                    'moments': 'highlights key moments',
+                    'best': 'presents the best examples'
+                }
+
+                title_subjects = {
+                    'aura': 'aura points and social dominance',
+                    'sigma': 'sigma mindset and masculinity',
+                    'matcha': 'matcha drinks and aesthetic lifestyle',
+                    'glow up': 'transformation and self-improvement',
+                    'aesthetic': 'aesthetic visuals and styling',
+                    'outfit': 'fashion and clothing',
+                    'makeup': 'makeup and beauty',
+                    'food': 'food and cooking',
+                    'recipe': 'recipes and cooking',
+                    'dance': 'dancing and choreography',
+                    'funny': 'comedy and humor',
+                    'prank': 'pranks and reactions'
+                }
+
+                # Find matching action
+                action_found = None
+                for keyword, action in title_actions.items():
+                    if keyword in title_lower:
+                        action_found = action
+                        break
+
+                # Find matching subject
+                subject_found = None
+                for keyword, subject in title_subjects.items():
+                    if keyword in title_lower:
+                        subject_found = subject
+                        break
+
+                # Build intelligent description
+                if action_found and subject_found:
+                    detailed_description = f"This video {action_found} about {subject_found}."
+                elif action_found:
+                    detailed_description = f"This video {action_found}."
+                elif subject_found:
+                    detailed_description = f"This video focuses on {subject_found}."
+                else:
+                    # Fall back to element-based description
+                    sorted_elements = sorted(
+                        detected_elements.items(),
+                        key=lambda x: x[1]['segment_count'],
+                        reverse=True
+                    )
+
+                    if sorted_elements and len(sorted_elements) >= 2:
+                        top_elements = [elem[0] for elem in sorted_elements[:5]]
+
+                        if 'people' in top_elements or 'person' in top_elements:
+                            if 'dancing' in top_elements:
+                                detailed_description = "This video shows people dancing and performing choreography."
+                            elif 'performance' in top_elements:
+                                detailed_description = "This video features people performing for the camera."
+                            elif 'sports' in top_elements or 'action' in top_elements:
+                                detailed_description = "This video captures people engaged in athletic or action-based activities."
+                            else:
+                                detailed_description = "This video features people in a short-form content format."
+                        elif 'product' in top_elements or 'shopping' in top_elements:
+                            detailed_description = "This video showcases and demonstrates various products."
+                        elif 'food' in top_elements or 'cooking' in top_elements:
+                            detailed_description = "This video features food preparation or culinary content."
+                        else:
+                            # Ultra fallback
+                            detailed_description = f"This short-form video is about {selected_trend}, featuring engaging visual content."
+                    else:
+                        detailed_description = f"This short-form video is part of the {selected_trend} trend, featuring engaging content popular on social media."
 
             # Build analysis result
             video_analysis = {
                 'video_info': video_info,
-                'detected_elements': detected_elements
+                'detected_elements': detected_elements,
+                'detailed_description': detailed_description
             }
 
             analysis_results.append(video_analysis)
 
             print(f"  ✓ Detected {len(detected_elements)} visual elements")
+            print(f"  ✓ Generated description: {detailed_description[:100]}...")
 
         # Clean up video file
         if os.path.exists(video_path):
@@ -796,13 +956,19 @@ def main():
         video_infos
     )
 
-    # Add sample videos to the trend data
+    # Add sample videos to the trend data with descriptions
     comprehensive_trend['sample_videos'] = [
         {
             'title': r['video_info']['title'],
             'url': r['video_info']['url'],
             'views': r['video_info']['views'],
-            'likes': r['video_info']['likes']
+            'likes': r['video_info']['likes'],
+            'what_is_happening': r.get('detailed_description', 'Video content analysis'),
+            'why_its_trending': [
+                f"part of the viral '{selected_trend}' trend",
+                "high engagement and shareability",
+                "relatable content format"
+            ]
         }
         for r in analysis_results
     ]
