@@ -382,70 +382,247 @@ def analyze_trending_context(video_info):
 
     return trending_reasons
 
-def generate_video_description(video_info, detected_elements, index_id, video_id, trend_keyword):
-    """Generate a specific description of what's in the video and why it's trending"""
+def extract_colors_from_elements(detected_elements):
+    """Extract color information from detected visual elements"""
+    colors = []
 
-    # Sort elements by prevalence to understand the video
-    sorted_elements = sorted(
-        detected_elements.items(),
-        key=lambda x: x[1]['segment_count'],
-        reverse=True
-    )
+    # Common color-related keywords to search for
+    color_keywords = {
+        'red': 'red', 'pink': 'pink', 'hot pink': 'hot pink',
+        'blue': 'blue', 'navy': 'navy blue', 'electric blue': 'electric blue',
+        'yellow': 'yellow', 'sunshine': 'sunshine yellow',
+        'green': 'green', 'lime': 'lime green', 'neon': 'neon green',
+        'orange': 'orange', 'purple': 'purple', 'black': 'black',
+        'white': 'white', 'brown': 'brown', 'gold': 'gold',
+        'bright': 'bright colors', 'colorful': 'vibrant colors',
+        'pastel': 'pastel tones', 'dark': 'dark tones'
+    }
 
-    # Build a detailed description based on detected elements
-    description_parts = []
+    # Detect colors from visual elements (you can enhance this with actual color detection)
+    for element in detected_elements.keys():
+        for keyword, color_name in color_keywords.items():
+            if keyword in element.lower() and color_name not in colors:
+                colors.append(color_name)
 
-    # Check for people/characters
-    people_elements = [e for e in sorted_elements if e[0] in ['person', 'people', 'crowd', 'celebrity', 'famous person']]
-    if people_elements:
-        description_parts.append(f"featuring {people_elements[0][0]}")
+    # Default color palette if none detected
+    if not colors:
+        colors = ["neutral", "modern tones", "versatile palette"]
 
-    # Check for actions/activities
-    action_elements = [e for e in sorted_elements if e[0] in ['action', 'movement', 'activity', 'dancing', 'sports', 'game', 'performance']]
-    if action_elements:
-        activities = ', '.join([e[0] for e in action_elements[:2]])
-        description_parts.append(f"engaged in {activities}")
+    return colors[:5]  # Return top 5 colors
 
-    # Check for setting
-    setting_elements = [e for e in sorted_elements if e[0] in ['indoor', 'outdoor', 'nature', 'landscape', 'home', 'room']]
-    if setting_elements:
-        description_parts.append(f"in an {setting_elements[0][0]} setting")
+def extract_keywords_from_trend(trend_keyword, detected_elements, video_infos):
+    """Extract descriptive keywords for the trend"""
+    keywords = []
 
-    # Check for specific objects/themes
-    object_elements = [e for e in sorted_elements if e[0] in ['car', 'vehicle', 'food', 'animal', 'pet', 'phone', 'computer', 'product']]
-    if object_elements:
-        objects = ', '.join([e[0] for e in object_elements[:2]])
-        description_parts.append(f"with {objects}")
+    # Base keywords from trend name
+    trend_words = trend_keyword.lower().split()
+    keywords.extend(trend_words)
 
-    # Check for text/graphics
-    text_elements = [e for e in sorted_elements if e[0] in ['text', 'words', 'graphics']]
-    if text_elements:
-        description_parts.append("and text overlays")
+    # Extract from detected elements
+    visual_descriptors = []
+    for element in detected_elements.keys():
+        if element in ['person', 'people', 'dancing', 'performance', 'action', 'movement']:
+            visual_descriptors.append('energetic')
+        if element in ['food', 'cooking', 'eating']:
+            visual_descriptors.append('culinary')
+        if element in ['outdoor', 'nature', 'landscape']:
+            visual_descriptors.append('natural')
+        if element in ['text', 'graphics']:
+            visual_descriptors.append('bold')
+            visual_descriptors.append('expressive')
 
-    # Build final description
-    title = video_info['title']
-    tags = video_info.get('tags', [])
+    keywords.extend(list(set(visual_descriptors)))
 
-    if description_parts:
-        description = f"This '{trend_keyword}' trend video shows a short-form clip {' '.join(description_parts)}. "
+    # Add common trend descriptors
+    trend_descriptors = {
+        'aura': ['confident', 'dominant', 'powerful', 'impressive', 'stoic'],
+        'matcha': ['healthy', 'aesthetic', 'calming', 'trendy', 'green'],
+        'glow up': ['transformation', 'beauty', 'self-improvement', 'before-after', 'inspiring'],
+        'chill guy': ['relaxed', 'laid-back', 'casual', 'meme', 'humorous'],
+        'sigma': ['independent', 'masculine', 'alpha', 'confident', 'self-reliant'],
+        'dubai chocolate': ['luxury', 'viral', 'exotic', 'indulgent', 'premium'],
+        'boba': ['sweet', 'aesthetic', 'Asian', 'trendy', 'photogenic'],
+        'capybara': ['cute', 'wholesome', 'calm', 'animal', 'peaceful'],
+        'y2k': ['nostalgic', '2000s', 'retro', 'colorful', 'futuristic'],
+        'cottage core': ['rustic', 'natural', 'cozy', 'vintage', 'pastoral'],
+        'dark academia': ['scholarly', 'vintage', 'intellectual', 'moody', 'classic']
+    }
+
+    if trend_keyword.lower() in trend_descriptors:
+        keywords.extend(trend_descriptors[trend_keyword.lower()])
+
+    # Remove duplicates and return top 7
+    unique_keywords = list(dict.fromkeys(keywords))
+    return unique_keywords[:7]
+
+def determine_target_products(trend_keyword, detected_elements):
+    """Determine target product types for this trend"""
+    products = []
+
+    # Trend-specific product mapping
+    trend_products = {
+        'aura': ['graphic tees', 'hoodies', 'statement shirts', 'sigma apparel', 'meme merchandise'],
+        'matcha': ['drink packaging', 'tote bags', 'aesthetic apparel', 'minimalist merch', 'wellness products'],
+        'glow up': ['beauty products', 'motivational apparel', 'transformation merch', 'self-care items', 'wellness gear'],
+        'chill guy': ['casual tees', 'relaxed hoodies', 'meme apparel', 'comfort wear', 'laid-back accessories'],
+        'sigma': ['masculine apparel', 'motivational tees', 'gym wear', 'alpha merch', 'confidence apparel'],
+        'dubai chocolate': ['luxury packaging', 'exotic treats', 'premium merch', 'viral food items', 'gift boxes'],
+        'boba': ['drink accessories', 'aesthetic tees', 'Asian fusion merch', 'cute apparel', 'kawaii items'],
+        'tinned fish': ['food packaging', 'culinary apparel', 'chef merch', 'gourmet items', 'cooking accessories'],
+        'capybara': ['animal tees', 'cute hoodies', 'plushies', 'wholesome merch', 'kawaii accessories'],
+        'y2k': ['retro tees', 'nostalgic hoodies', '2000s apparel', 'colorful accessories', 'futuristic merch'],
+        'cottage core': ['rustic tees', 'vintage apparel', 'nature merch', 'cozy hoodies', 'pastoral accessories'],
+        'dark academia': ['scholarly apparel', 'vintage tees', 'intellectual merch', 'classic hoodies', 'literary items']
+    }
+
+    if trend_keyword.lower() in trend_products:
+        products = trend_products[trend_keyword.lower()]
     else:
-        description = f"This is a '{trend_keyword}' trend video titled '{title}'. "
+        # Default products
+        products = ['graphic tees', 'hoodies', 'accessories', 'statement pieces', 'merchandise']
 
-    # Add context based on title keywords
-    title_lower = title.lower()
-    description += f"The video relates to the current '{trend_keyword}' trend through its content and presentation style."
+    return products[:5]
 
-    # Analyze contextual trending reasons (non-engagement based)
-    trending_reasons = analyze_trending_context(video_info)
+def calculate_popularity_score(video_infos):
+    """Calculate popularity score based on engagement metrics"""
+    total_views = sum(v['views'] for v in video_infos)
+    total_likes = sum(v['likes'] for v in video_infos)
+    avg_engagement = (total_likes / total_views * 100) if total_views > 0 else 0
 
-    # Add trend-specific reason if not already present
-    trend_lower = trend_keyword.lower()
-    if not any(trend_lower in r.lower() for r in trending_reasons):
-        trending_reasons.insert(0, f"part of the viral '{trend_keyword}' trend")
+    # Score from 0-100 based on total engagement
+    if total_views > 50000000:  # 50M+ views
+        base_score = 90
+    elif total_views > 20000000:  # 20M+ views
+        base_score = 80
+    elif total_views > 5000000:  # 5M+ views
+        base_score = 70
+    else:
+        base_score = 60
+
+    # Adjust by engagement rate
+    engagement_bonus = min(avg_engagement * 2, 10)
+
+    return min(int(base_score + engagement_bonus), 100)
+
+def determine_platforms_and_demographics(trend_keyword):
+    """Determine which platforms and demographics for this trend"""
+    trend_data = {
+        'aura': {
+            'platforms': ['TikTok', 'YouTube Shorts', 'Instagram Reels'],
+            'demographics': ['Gen Z', 'Young Men', 'Teens']
+        },
+        'matcha': {
+            'platforms': ['TikTok', 'Instagram', 'Pinterest'],
+            'demographics': ['Millennials', 'Gen Z', 'Women 18-35']
+        },
+        'glow up': {
+            'platforms': ['TikTok', 'Instagram', 'YouTube Shorts'],
+            'demographics': ['Gen Z', 'Teens', 'Young Adults']
+        },
+        'chill guy': {
+            'platforms': ['TikTok', 'Instagram', 'Twitter'],
+            'demographics': ['Gen Z', 'Millennials', 'Meme Culture']
+        },
+        'sigma': {
+            'platforms': ['TikTok', 'YouTube', 'Instagram'],
+            'demographics': ['Young Men', 'Teens', 'Gen Z']
+        }
+    }
+
+    default = {
+        'platforms': ['TikTok', 'Instagram', 'YouTube Shorts'],
+        'demographics': ['Gen Z', 'Millennials']
+    }
+
+    return trend_data.get(trend_keyword.lower(), default)
+
+def generate_marketing_angle(trend_keyword, keywords):
+    """Generate marketing angle based on trend and keywords"""
+    trend_angles = {
+        'aura': "Focus on confidence, dominance, and personal power. Use 'radiate confidence', 'command respect', 'embrace your aura'",
+        'matcha': "Focus on wellness, aesthetics, and trendy lifestyle. Use 'embrace wellness', 'aesthetic living', 'green goodness'",
+        'glow up': "Focus on transformation, self-improvement, and empowerment. Use 'transform yourself', 'become your best self', 'glow differently'",
+        'chill guy': "Focus on relaxation, humor, and laid-back attitude. Use 'stay chill', 'embrace calm', 'unbothered energy'",
+        'sigma': "Focus on independence, self-reliance, and masculine energy. Use 'walk alone', 'self-made', 'alpha mindset'"
+    }
+
+    if trend_keyword.lower() in trend_angles:
+        return trend_angles[trend_keyword.lower()]
+
+    # Generate based on keywords
+    keyword_str = ', '.join(keywords[:3])
+    return f"Focus on {keyword_str} themes. Emphasize authenticity, trend participation, and self-expression"
+
+def extract_hashtags(trend_keyword, video_infos):
+    """Extract and generate relevant hashtags"""
+    hashtags = [f"#{trend_keyword.replace(' ', '')}"]
+
+    # Extract from video tags
+    for video in video_infos:
+        for tag in video.get('tags', []):
+            tag_clean = tag.lower().replace(' ', '')
+            if len(tag_clean) > 2 and tag_clean not in [h[1:] for h in hashtags]:
+                hashtags.append(f"#{tag_clean}")
+
+    # Add trend-specific hashtags
+    trend_hashtags = {
+        'aura': ['#sigma', '#confidence', '#dominant', '#powerful'],
+        'matcha': ['#matchalatte', '#wellness', '#aesthetic', '#greentea'],
+        'glow up': ['#transformation', '#glowup', '#beforeandafter', '#selflove'],
+        'chill guy': ['#chillvibes', '#meme', '#relaxed', '#unbothered'],
+        'sigma': ['#sigmamale', '#alpha', '#mindset', '#grind']
+    }
+
+    if trend_keyword.lower() in trend_hashtags:
+        hashtags.extend(trend_hashtags[trend_keyword.lower()])
+
+    # Remove duplicates
+    unique_hashtags = list(dict.fromkeys(hashtags))
+    return unique_hashtags[:8]
+
+def generate_comprehensive_trend_analysis(trend_keyword, all_detected_elements, video_infos):
+    """Generate comprehensive trend analysis matching the required format"""
+
+    # Aggregate all detected elements across videos
+    aggregated_elements = {}
+    for elements in all_detected_elements:
+        for key, value in elements.items():
+            if key in aggregated_elements:
+                aggregated_elements[key]['segment_count'] += value['segment_count']
+            else:
+                aggregated_elements[key] = value.copy()
+
+    # Generate trend ID
+    trend_id = f"trend_{trend_keyword.lower().replace(' ', '_')}"
+
+    # Extract comprehensive data
+    keywords = extract_keywords_from_trend(trend_keyword, aggregated_elements, video_infos)
+    color_palette = extract_colors_from_elements(aggregated_elements)
+    target_products = determine_target_products(trend_keyword, aggregated_elements)
+    marketing_angle = generate_marketing_angle(trend_keyword, keywords)
+    popularity_score = calculate_popularity_score(video_infos)
+    platform_demo = determine_platforms_and_demographics(trend_keyword)
+    hashtags = extract_hashtags(trend_keyword, video_infos)
+
+    # Generate description
+    description = f"{trend_keyword.title()} trend featuring {', '.join(keywords[:3])} content. "
+    if aggregated_elements:
+        top_elements = sorted(aggregated_elements.keys(), key=lambda x: aggregated_elements[x]['segment_count'], reverse=True)[:3]
+        description += f"Characterized by {', '.join(top_elements)}. "
+    description += f"Popular among {', '.join(platform_demo['demographics'])} on {', '.join(platform_demo['platforms'])}."
 
     return {
-        'what_is_happening': description,
-        'why_its_trending': trending_reasons if trending_reasons else ['viral short-form content appeal']
+        "id": trend_id,
+        "name": trend_keyword.title(),
+        "description": description,
+        "keywords": keywords,
+        "color_palette": color_palette,
+        "target_products": target_products,
+        "marketing_angle": marketing_angle,
+        "popularity_score": popularity_score,
+        "platforms": platform_demo['platforms'],
+        "demographics": platform_demo['demographics'],
+        "hashtags": hashtags
     }
 
 def get_product_trend_keywords():
@@ -553,6 +730,7 @@ def main():
 
     # Step 3: Analyze each trending video
     analysis_results = []
+    all_detected_elements = []
 
     for i, video_info in enumerate(trending_videos, 1):
         print(f"\n{'='*60}")
@@ -584,65 +762,65 @@ def main():
             print(f"  ✓ Processing complete!")
 
             # Analyze objects
-            print(f"\n4. Analyzing video content...")
+            print(f"\n4. Analyzing video content with Twelve Labs AI...")
             detected_elements = analyze_video_objects(index_id)
-
-            # Generate detailed description
-            print(f"\n5. Generating video description and trending analysis...")
-            video_description_analysis = generate_video_description(video_info, detected_elements, index_id, video_id, selected_trend)
+            all_detected_elements.append(detected_elements)
 
             # Build analysis result
             video_analysis = {
                 'video_info': video_info,
-                'description_analysis': video_description_analysis
+                'detected_elements': detected_elements
             }
 
             analysis_results.append(video_analysis)
 
-            print(f"\n  📝 What's Happening:")
-            print(f"      {video_description_analysis['what_is_happening'][:150]}...")
-
-            print(f"\n  🔥 Why It's Trending:")
-            for reason in video_description_analysis['why_its_trending']:
-                print(f"    • {reason}")
+            print(f"  ✓ Detected {len(detected_elements)} visual elements")
 
         # Clean up video file
         if os.path.exists(video_path):
             os.remove(video_path)
 
-    # Step 4: Create simplified final report
+    # Step 4: Generate comprehensive trend analysis
     print(f"\n\n{'='*60}")
-    print("TREND ANALYSIS SUMMARY")
+    print("GENERATING COMPREHENSIVE TREND ANALYSIS")
     print(f"{'='*60}\n")
 
-    final_report = {
-        'analysis_timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
-        'trend_analyzed': selected_trend,
-        'product_potential': 't-shirts, merch, accessories, packaging',
-        'videos_analyzed': len(analysis_results),
-        'videos': [
-            {
-                'title': r['video_info']['title'],
-                'url': r['video_info']['url'],
-                'channel': r['video_info']['channel'],
-                'duration_seconds': r['video_info']['duration_seconds'],
-                'what_is_happening': r['description_analysis']['what_is_happening'],
-                'why_its_trending': r['description_analysis']['why_its_trending']
-            }
-            for r in analysis_results
-        ]
-    }
+    # Extract video infos
+    video_infos = [r['video_info'] for r in analysis_results]
+
+    # Generate comprehensive analysis
+    print(f"📊 Analyzing {len(analysis_results)} videos for trend patterns...")
+    comprehensive_trend = generate_comprehensive_trend_analysis(
+        selected_trend,
+        all_detected_elements,
+        video_infos
+    )
+
+    # Add sample videos to the trend data
+    comprehensive_trend['sample_videos'] = [
+        {
+            'title': r['video_info']['title'],
+            'url': r['video_info']['url'],
+            'views': r['video_info']['views'],
+            'likes': r['video_info']['likes']
+        }
+        for r in analysis_results
+    ]
 
     # Print summary
-    print(f"🔥 ANALYZED {len(analysis_results)} '{selected_trend.upper()}' TREND VIDEOS")
-    for i, video in enumerate(final_report['videos'], 1):
-        print(f"\n  Video {i}: {video['title'][:50]}...")
-        print(f"  Why trending: {', '.join(video['why_its_trending'])}")
+    print(f"\n✅ COMPREHENSIVE TREND ANALYSIS COMPLETE")
+    print(f"\nTrend: {comprehensive_trend['name']}")
+    print(f"Popularity Score: {comprehensive_trend['popularity_score']}/100")
+    print(f"Keywords: {', '.join(comprehensive_trend['keywords'])}")
+    print(f"Target Products: {', '.join(comprehensive_trend['target_products'])}")
+    print(f"Platforms: {', '.join(comprehensive_trend['platforms'])}")
+    print(f"Demographics: {', '.join(comprehensive_trend['demographics'])}")
+    print(f"Hashtags: {', '.join(comprehensive_trend['hashtags'][:5])}")
 
     # Save to JSON
     output_file = f"trending_analysis_{int(time.time())}.json"
     with open(output_file, 'w') as f:
-        json.dump(final_report, f, indent=2)
+        json.dump(comprehensive_trend, f, indent=2)
 
     print(f"\n{'='*60}")
     print(f"✓ Analysis complete! Results saved to: {output_file}")

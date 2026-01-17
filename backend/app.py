@@ -16,6 +16,7 @@ from routes import products_bp, trends_bp, health_bp
 from config import config
 
 
+
 def create_app():
     """
     Application factory for Flask app.
