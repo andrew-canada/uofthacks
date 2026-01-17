@@ -222,5 +222,7 @@ trending_analysis_*.json
 # Trend tracking history
 .trend_history.txt
 
+#trend_identification
+.trend_identification/perplexity.txt
 # OS files
 .DS_Store
