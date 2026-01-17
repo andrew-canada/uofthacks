@@ -13,54 +13,145 @@ except ImportError:
     print("Please copy config_template.py to config.py and add your API keys.")
     exit(1)
 
-def get_trending_videos(max_results=5, region_code='US'):
-    """Get currently trending videos from YouTube - fetches different videos each time"""
-    url = "https://www.googleapis.com/youtube/v3/videos"
+def parse_duration(duration_str):
+    """Parse ISO 8601 duration format (PT#M#S) to seconds"""
+    import re
+    # Pattern: PT1M30S = 1 minute 30 seconds
+    pattern = r'PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?'
+    match = re.match(pattern, duration_str)
 
-    # Fetch more videos than needed so we can randomize selection
-    fetch_count = max_results * 3
+    if not match:
+        return 0
+
+    hours = int(match.group(1)) if match.group(1) else 0
+    minutes = int(match.group(2)) if match.group(2) else 0
+    seconds = int(match.group(3)) if match.group(3) else 0
+
+    return hours * 3600 + minutes * 60 + seconds
+
+def search_trending_shorts_by_keyword(keyword, max_results=5):
+    """Search for trending Shorts by keyword"""
+    url = "https://www.googleapis.com/youtube/v3/search"
 
     params = {
-        'part': 'snippet,statistics,contentDetails',
-        'chart': 'mostPopular',
-        'regionCode': region_code,
-        'maxResults': fetch_count,
-        'videoCategoryId': '0',  # All categories
+        'part': 'snippet',
+        'q': keyword,
+        'type': 'video',
+        'videoDuration': 'short',  # Videos under 4 minutes
+        'maxResults': 50,
+        'order': 'viewCount',  # Most viewed
         'key': YOUTUBE_API_KEY
     }
 
-    print(f"\n{'='*60}")
-    print(f"Fetching Trending Videos from YouTube")
-    print(f"{'='*60}\n")
-
     response = requests.get(url, params=params)
     response.raise_for_status()
-    data = response.json()
+    search_data = response.json()
 
-    all_videos = []
-    for item in data.get('items', []):
-        video_info = {
-            'video_id': item['id'],
-            'url': f"https://www.youtube.com/watch?v={item['id']}",
-            'title': item['snippet']['title'],
-            'channel': item['snippet']['channelTitle'],
-            'description': item['snippet'].get('description', ''),
-            'views': int(item['statistics'].get('viewCount', 0)),
-            'likes': int(item['statistics'].get('likeCount', 0)),
-            'comments': int(item['statistics'].get('commentCount', 0)),
-            'published_at': item['snippet']['publishedAt'],
-            'category_id': item['snippet']['categoryId'],
-            'tags': item['snippet'].get('tags', [])
+    # Get video IDs
+    video_ids = [item['id']['videoId'] for item in search_data.get('items', [])]
+
+    if not video_ids:
+        return []
+
+    # Get full details for these videos
+    details_url = "https://www.googleapis.com/youtube/v3/videos"
+    details_params = {
+        'part': 'snippet,statistics,contentDetails',
+        'id': ','.join(video_ids),
+        'key': YOUTUBE_API_KEY
+    }
+
+    details_response = requests.get(details_url, params=details_params)
+    details_response.raise_for_status()
+    return details_response.json()
+
+def get_trending_videos(max_results=5, region_code='US', trend_filter=None):
+    """Get currently trending YouTube Shorts (excluding music videos)"""
+
+    # If trend_filter specified, search by keyword instead of trending chart
+    if trend_filter:
+        data = search_trending_shorts_by_keyword(trend_filter, max_results)
+    else:
+        url = "https://www.googleapis.com/youtube/v3/videos"
+        fetch_count = 50
+
+        params = {
+            'part': 'snippet,statistics,contentDetails',
+            'chart': 'mostPopular',
+            'regionCode': region_code,
+            'maxResults': fetch_count,
+            'videoCategoryId': '0',
+            'key': YOUTUBE_API_KEY
         }
-        all_videos.append(video_info)
+
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+    print(f"\n{'='*60}")
+    if trend_filter:
+        print(f"Searching for YouTube Shorts - '{trend_filter.upper()}' Trend")
+    else:
+        print(f"Fetching Trending YouTube Shorts (Non-Music)")
+    print(f"{'='*60}\n")
+
+    all_shorts = []
+    for item in data.get('items', []):
+        # Get duration
+        duration_str = item['contentDetails'].get('duration', 'PT0S')
+        duration_seconds = parse_duration(duration_str)
+
+        # Get category (10 = Music, 24 = Entertainment)
+        category_id = item['snippet']['categoryId']
+
+        # Filter: Only Shorts (<=60 seconds) and NOT music videos
+        is_short = duration_seconds <= 60 and duration_seconds > 0
+        is_music_category = category_id == '10'
+
+        # Also check title/description for music indicators
+        title_lower = item['snippet']['title'].lower()
+        description_lower = item['snippet'].get('description', '').lower()
+
+        is_music_video = (
+            'official music video' in title_lower or
+            'music video' in title_lower or
+            'official video' in title_lower
+        )
+
+        if is_short and not is_music_category and not is_music_video:
+            video_info = {
+                'video_id': item['id'],
+                'url': f"https://www.youtube.com/watch?v={item['id']}",
+                'title': item['snippet']['title'],
+                'channel': item['snippet']['channelTitle'],
+                'description': item['snippet'].get('description', ''),
+                'views': int(item['statistics'].get('viewCount', 0)),
+                'likes': int(item['statistics'].get('likeCount', 0)),
+                'comments': int(item['statistics'].get('commentCount', 0)),
+                'published_at': item['snippet']['publishedAt'],
+                'category_id': category_id,
+                'tags': item['snippet'].get('tags', []),
+                'duration_seconds': duration_seconds
+            }
+            all_shorts.append(video_info)
+
+    filter_msg = f" matching '{trend_filter}' trend" if trend_filter else ""
+    source_msg = f"searched videos" if trend_filter else f"trending videos"
+    print(f"Found {len(all_shorts)} YouTube Shorts{filter_msg} (from {source_msg})")
+
+    if len(all_shorts) == 0:
+        print(f"\n⚠️  No YouTube Shorts found{filter_msg}!")
+        print("Try running again or adjust filters.\n")
+        return []
 
     # Randomly sample videos for variety each run
     import random
-    selected_videos = random.sample(all_videos, min(max_results, len(all_videos)))
+    selected_videos = random.sample(all_shorts, min(max_results, len(all_shorts)))
 
+    print(f"\nSelected {len(selected_videos)} Shorts for analysis:\n")
     for video_info in selected_videos:
         print(f"✓ {video_info['title']}")
-        print(f"  Views: {video_info['views']:,} | Likes: {video_info['likes']:,}")
+        print(f"  Duration: {video_info['duration_seconds']}s | Views: {video_info['views']:,} | Likes: {video_info['likes']:,}")
         print(f"  URL: {video_info['url']}\n")
 
     return selected_videos
@@ -291,86 +382,163 @@ def analyze_trending_context(video_info):
 
     return trending_reasons
 
-def generate_video_description(video_info, detected_elements):
+def generate_video_description(video_info, detected_elements, index_id, video_id, trend_keyword):
     """Generate a specific description of what's in the video and why it's trending"""
 
-    # Sort elements by prevalence
+    # Sort elements by prevalence to understand the video
     sorted_elements = sorted(
         detected_elements.items(),
         key=lambda x: x[1]['segment_count'],
         reverse=True
     )
 
-    # Build description
-    description = f"This is '{video_info['title']}'. "
+    # Build a detailed description based on detected elements
+    description_parts = []
 
-    # Analyze main content
-    top_elements = [elem[0] for elem in sorted_elements[:5]]
+    # Check for people/characters
+    people_elements = [e for e in sorted_elements if e[0] in ['person', 'people', 'crowd', 'celebrity', 'famous person']]
+    if people_elements:
+        description_parts.append(f"featuring {people_elements[0][0]}")
 
-    # Determine video type and description based on detected objects
-    if 'music' in top_elements or 'dancing' in top_elements or 'performance' in top_elements:
-        description += "The video features musical content with performances and dancing. "
-        video_type = "Music/Performance"
-    elif 'sports' in top_elements or 'game' in top_elements or 'competition' in top_elements:
-        description += "The video showcases sports or gaming content with competitive action. "
-        video_type = "Sports/Gaming"
-    elif 'food' in top_elements or 'cooking' in top_elements:
-        description += "The video focuses on food and cooking content. "
-        video_type = "Food/Cooking"
-    elif 'product' in top_elements or 'unboxing' in top_elements or 'shopping' in top_elements:
-        description += "The video presents product reviews, unboxing, or shopping content. "
-        video_type = "Product/Review"
-    elif 'celebrity' in top_elements or 'famous person' in top_elements:
-        description += "The video features celebrity or famous personality content. "
-        video_type = "Celebrity/Entertainment"
-    elif 'children' in top_elements or 'baby' in top_elements or 'kids' in top_elements:
-        description += "The video contains child-friendly or family content. "
-        video_type = "Family/Kids"
-    elif 'animal' in top_elements or 'pet' in top_elements:
-        description += "The video showcases animals or pets. "
-        video_type = "Animals/Pets"
+    # Check for actions/activities
+    action_elements = [e for e in sorted_elements if e[0] in ['action', 'movement', 'activity', 'dancing', 'sports', 'game', 'performance']]
+    if action_elements:
+        activities = ', '.join([e[0] for e in action_elements[:2]])
+        description_parts.append(f"engaged in {activities}")
+
+    # Check for setting
+    setting_elements = [e for e in sorted_elements if e[0] in ['indoor', 'outdoor', 'nature', 'landscape', 'home', 'room']]
+    if setting_elements:
+        description_parts.append(f"in an {setting_elements[0][0]} setting")
+
+    # Check for specific objects/themes
+    object_elements = [e for e in sorted_elements if e[0] in ['car', 'vehicle', 'food', 'animal', 'pet', 'phone', 'computer', 'product']]
+    if object_elements:
+        objects = ', '.join([e[0] for e in object_elements[:2]])
+        description_parts.append(f"with {objects}")
+
+    # Check for text/graphics
+    text_elements = [e for e in sorted_elements if e[0] in ['text', 'words', 'graphics']]
+    if text_elements:
+        description_parts.append("and text overlays")
+
+    # Build final description
+    title = video_info['title']
+    tags = video_info.get('tags', [])
+
+    if description_parts:
+        description = f"This '{trend_keyword}' trend video shows a short-form clip {' '.join(description_parts)}. "
     else:
-        description += "The video contains entertainment content. "
-        video_type = "General Entertainment"
+        description = f"This is a '{trend_keyword}' trend video titled '{title}'. "
 
-    # Add specific visual elements
-    if detected_elements:
-        main_objects = ', '.join(top_elements[:3])
-        description += f"Key visual elements detected include: {main_objects}. "
+    # Add context based on title keywords
+    title_lower = title.lower()
+    description += f"The video relates to the current '{trend_keyword}' trend through its content and presentation style."
 
-    # Analyze contextual trending reasons
+    # Analyze contextual trending reasons (non-engagement based)
     trending_reasons = analyze_trending_context(video_info)
 
-    # Add engagement metrics
-    engagement_rate = video_info['likes'] / max(video_info['views'], 1) * 100
-
-    # Add trending analysis with CONTEXT
-    description += f"\n\nWhy it's trending: "
-    if trending_reasons:
-        description += f"This video is trending because {', '.join(trending_reasons)}. "
-    else:
-        description += "This video is gaining traction through viewer engagement. "
-
-    # Add stats
-    description += f"It has accumulated {video_info['views']:,} views and {video_info['likes']:,} likes "
-    description += f"({engagement_rate:.1f}% engagement rate), demonstrating strong viewer interest."
+    # Add trend-specific reason if not already present
+    trend_lower = trend_keyword.lower()
+    if not any(trend_lower in r.lower() for r in trending_reasons):
+        trending_reasons.insert(0, f"part of the viral '{trend_keyword}' trend")
 
     return {
-        'description': description,
-        'video_type': video_type,
-        'trending_reasons': trending_reasons,
-        'engagement_rate': round(engagement_rate, 2),
-        'top_visual_elements': top_elements[:5]
+        'what_is_happening': description,
+        'why_its_trending': trending_reasons if trending_reasons else ['viral short-form content appeal']
     }
+
+def get_product_trend_keywords():
+    """
+    Get list of current trending keywords with product/merch potential.
+    Based on actual TikTok/YouTube trends from January 2026.
+    """
+    # Product-ready trends (can make t-shirts, merch, accessories, food products)
+    product_trends = [
+        # Viral meme trends (apparel potential)
+        "aura",
+        "chill guy",
+        "sigma",
+        "365 buttons",
+        "demure",
+        "very mindful",
+
+        # Food trends (packaging, merchandise)
+        "dubai chocolate",
+        "matcha",
+        "boba",
+        "crumbl cookie",
+        "tinned fish",
+
+        # Aesthetic/fashion trends (apparel, accessories)
+        "y2k",
+        "cottage core",
+        "dark academia",
+        "clean girl",
+        "mob wife",
+
+        # Animal trends (apparel, accessories)
+        "capybara",
+        "axolotl",
+
+        # Lifestyle trends (apparel, accessories)
+        "hot girl walk",
+        "that girl",
+        "glow up",
+
+        # Pop culture (apparel potential)
+        "stanley cup",
+        "lululemon style",
+    ]
+
+    return product_trends
+
+def select_random_trend():
+    """Select a random product trend, avoiding recent repeats"""
+    trends = get_product_trend_keywords()
+
+    # Track previously used trends to ensure variety
+    history_file = ".trend_history.txt"
+    used_trends = []
+
+    if os.path.exists(history_file):
+        with open(history_file, 'r') as f:
+            used_trends = [line.strip() for line in f.readlines()]
+
+    # Filter out recently used trends (last 5)
+    recent_trends = used_trends[-5:] if len(used_trends) >= 5 else used_trends
+    available_trends = [t for t in trends if t not in recent_trends]
+
+    # If all trends used recently, reset
+    if not available_trends:
+        available_trends = trends
+        used_trends = []
+
+    # Select random trend
+    import random
+    selected_trend = random.choice(available_trends)
+
+    # Update history
+    used_trends.append(selected_trend)
+    with open(history_file, 'w') as f:
+        f.write('\n'.join(used_trends))
+
+    return selected_trend
 
 def main():
     print("\n" + "="*60)
-    print("YOUTUBE TRENDING VIDEO ANALYSIS")
+    print("YOUTUBE TRENDING SHORTS - PRODUCT TREND ANALYSIS")
     print("="*60)
 
-    # Step 1: Get trending videos
+    # Step 1: Select a random product-ready trend
+    selected_trend = select_random_trend()
+    print(f"\n🎯 ANALYZING TREND: '{selected_trend.upper()}'")
+    print(f"💡 Product Potential: T-shirts, merch, accessories, packaging")
+    print(f"{'='*60}")
+
+    # Get trending Shorts for this trend
     num_videos = 3  # Analyze top 3 trending videos
-    trending_videos = get_trending_videos(max_results=num_videos)
+    trending_videos = get_trending_videos(max_results=num_videos, trend_filter=selected_trend)
 
     if not trending_videos:
         print("No trending videos found!")
@@ -421,78 +589,55 @@ def main():
 
             # Generate detailed description
             print(f"\n5. Generating video description and trending analysis...")
-            video_description_analysis = generate_video_description(video_info, detected_elements)
+            video_description_analysis = generate_video_description(video_info, detected_elements, index_id, video_id, selected_trend)
 
             # Build analysis result
             video_analysis = {
                 'video_info': video_info,
-                'detected_objects': detected_elements,
-                'description_analysis': video_description_analysis,
-                'top_elements': sorted(
-                    detected_elements.items(),
-                    key=lambda x: x[1]['segment_count'],
-                    reverse=True
-                )[:10]  # Top 10 detected elements
+                'description_analysis': video_description_analysis
             }
 
             analysis_results.append(video_analysis)
 
-            print(f"\n  📝 Video Type: {video_description_analysis['video_type']}")
-            print(f"  📊 Engagement Rate: {video_description_analysis['engagement_rate']}%")
-            print(f"\n  Top detected elements:")
-            for element, data in video_analysis['top_elements'][:5]:
-                print(f"    • {element.upper()}: {data['segment_count']} segments")
+            print(f"\n  📝 What's Happening:")
+            print(f"      {video_description_analysis['what_is_happening'][:150]}...")
 
-            print(f"\n  🔥 Trending Factors:")
-            for reason in video_description_analysis['trending_reasons']:
+            print(f"\n  🔥 Why It's Trending:")
+            for reason in video_description_analysis['why_its_trending']:
                 print(f"    • {reason}")
 
         # Clean up video file
         if os.path.exists(video_path):
             os.remove(video_path)
 
-    # Step 4: Aggregate trends across all videos
+    # Step 4: Create simplified final report
     print(f"\n\n{'='*60}")
     print("TREND ANALYSIS SUMMARY")
     print(f"{'='*60}\n")
 
-    # Count common elements across videos
-    all_elements = Counter()
-    for result in analysis_results:
-        for element in result['detected_objects'].keys():
-            all_elements[element] += 1
-
-    # Identify trending themes
-    trending_themes = all_elements.most_common(10)
-
     final_report = {
         'analysis_timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'trend_analyzed': selected_trend,
+        'product_potential': 't-shirts, merch, accessories, packaging',
         'videos_analyzed': len(analysis_results),
-        'trending_themes': [
-            {'theme': theme, 'appears_in_videos': count}
-            for theme, count in trending_themes
-        ],
-        'individual_video_analysis': [
+        'videos': [
             {
                 'title': r['video_info']['title'],
                 'url': r['video_info']['url'],
-                'views': r['video_info']['views'],
-                'likes': r['video_info']['likes'],
-                'video_description': r['description_analysis']['description'],
-                'video_type': r['description_analysis']['video_type'],
-                'trending_reasons': r['description_analysis']['trending_reasons'],
-                'engagement_rate': r['description_analysis']['engagement_rate'],
-                'top_visual_elements': r['description_analysis']['top_visual_elements'],
-                'detected_objects': {k: v['segment_count'] for k, v in r['detected_objects'].items()}
+                'channel': r['video_info']['channel'],
+                'duration_seconds': r['video_info']['duration_seconds'],
+                'what_is_happening': r['description_analysis']['what_is_happening'],
+                'why_its_trending': r['description_analysis']['why_its_trending']
             }
             for r in analysis_results
         ]
     }
 
     # Print summary
-    print("🔥 TRENDING THEMES ACROSS VIDEOS:")
-    for theme_data in final_report['trending_themes']:
-        print(f"  • {theme_data['theme'].upper()}: Found in {theme_data['appears_in_videos']}/{num_videos} videos")
+    print(f"🔥 ANALYZED {len(analysis_results)} '{selected_trend.upper()}' TREND VIDEOS")
+    for i, video in enumerate(final_report['videos'], 1):
+        print(f"\n  Video {i}: {video['title'][:50]}...")
+        print(f"  Why trending: {', '.join(video['why_its_trending'])}")
 
     # Save to JSON
     output_file = f"trending_analysis_{int(time.time())}.json"

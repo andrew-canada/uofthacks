@@ -1,15 +1,33 @@
-# YouTube Trending Video Analysis with Twelve Labs AI
+# YouTube Trending Shorts Analysis - Product Trend Finder
 
-Analyze trending YouTube videos using AI-powered video understanding to identify visual content, objects, and determine why videos are trending.
+Automatically discover and analyze trending YouTube Shorts with product/merch potential using AI-powered video understanding. Perfect for identifying trends you can turn into t-shirts, merchandise, packaging, and accessories.
 
 ## Features
 
-- 🔥 Fetches currently trending videos from YouTube
-- 🎥 Downloads and analyzes videos using Twelve Labs AI
-- 🔍 Detects objects, people, animals, and visual elements in videos
-- 📊 Generates detailed descriptions of video content
-- 💡 Analyzes WHY videos are trending (events, collaborations, viral content, etc.)
-- 📄 Exports comprehensive JSON reports with all findings
+- 🎯 **Auto-Rotating Trends**: Automatically selects a different product-ready trend each run
+- 🔥 **25+ Trending Keywords**: Curated from actual January 2026 TikTok/YouTube trends
+- 🎥 **YouTube Shorts Only**: Analyzes videos ≤60 seconds (no music videos)
+- 🤖 **AI-Powered Analysis**: Uses Twelve Labs AI for video understanding
+- 📊 **Detailed Descriptions**: Shows what's happening in videos beyond just views/likes
+- 💡 **Context-Based Trending**: Explains WHY videos are trending (not just engagement)
+- 💰 **Product Potential**: Every trend has t-shirt/merch/packaging opportunities
+- 📄 **Clean JSON Output**: Simple, focused reports for each trend
+
+## Product-Ready Trends Included
+
+The script automatically rotates through these trending categories:
+
+**Meme/Culture Trends** (apparel): aura, chill guy, sigma, 365 buttons, demure, very mindful
+
+**Food Trends** (packaging/merch): dubai chocolate, matcha, boba, crumbl cookie, tinned fish
+
+**Aesthetic Trends** (apparel/accessories): y2k, cottage core, dark academia, clean girl, mob wife
+
+**Animal Trends** (apparel): capybara, axolotl
+
+**Lifestyle Trends** (apparel): hot girl walk, that girl, glow up
+
+**Pop Culture** (merch): stanley cup, lululemon style
 
 ## Setup
 
@@ -49,85 +67,72 @@ Edit `config.py` and add your API keys:
 
 ## Usage
 
-### Analyze Trending Videos
-
-Run the main analysis script:
+Run the analysis script - it automatically picks a new trend each time:
 
 ```bash
 python analyze_trending_videos.py
 ```
 
-This will:
-1. Fetch 3 random trending videos from YouTube
-2. Download each video
-3. Upload to Twelve Labs for AI analysis
-4. Detect objects and visual elements
-5. Generate descriptions and trending analysis
-6. Save results to `trending_analysis_<timestamp>.json`
+**Example runs:**
+- Run 1: Analyzes "aura" trend → finds sigma male meme videos
+- Run 2: Analyzes "tinned fish" trend → finds sardine recipe videos
+- Run 3: Analyzes "matcha" trend → finds matcha latte videos
+- Run 4: Analyzes a different trend from the 25+ keyword list
+
+### How It Works
+
+Each run:
+1. **Selects** a random product-ready trend (avoids last 5 used)
+2. **Searches** YouTube for Shorts matching that trend
+3. **Filters** for videos ≤60 seconds (excludes music)
+4. **Downloads** 3 random Shorts from results
+5. **Analyzes** with Twelve Labs AI
+6. **Generates** detailed descriptions of what's happening
+7. **Identifies** why they're trending (beyond views/likes)
+8. **Exports** to JSON with trend name and product potential
 
 ### Output Format
 
-The JSON output includes:
-
 ```json
 {
-  "analysis_timestamp": "2026-01-17 07:09:44",
+  "analysis_timestamp": "2026-01-17 08:01:22",
+  "trend_analyzed": "matcha",
+  "product_potential": "t-shirts, merch, accessories, packaging",
   "videos_analyzed": 3,
-  "trending_themes": [...],
-  "individual_video_analysis": [
+  "videos": [
     {
-      "title": "Video Title",
-      "url": "YouTube URL",
-      "views": 285531,
-      "likes": 19312,
-      "video_description": "Detailed description...",
-      "video_type": "Music/Performance",
-      "trending_reasons": ["the Super Bowl is upcoming", "collaboration between popular artists"],
-      "engagement_rate": 6.76,
-      "top_visual_elements": ["person", "music", "dancing"],
-      "detected_objects": {
-        "person": 3,
-        "music": 2,
-        ...
-      }
+      "title": "How to make Iced Strawberry Matcha",
+      "url": "https://www.youtube.com/watch?v=...",
+      "channel": "Channel Name",
+      "duration_seconds": 31,
+      "what_is_happening": "This 'matcha' trend video shows...",
+      "why_its_trending": [
+        "part of the viral 'matcha' trend",
+        "tutorial content"
+      ]
     }
   ]
 }
 ```
 
-## Video Types Detected
-
-- Music/Performance
-- Sports/Gaming
-- Food/Cooking
-- Product/Review
-- Celebrity/Entertainment
-- Family/Kids
-- Animals/Pets
-- General Entertainment
-
-## Trending Factors Analyzed
-
-The system analyzes video context to determine trending reasons:
-
-- **Event-based**: Super Bowl, Olympics, Grammy Awards, etc.
-- **Celebrity**: Collaborations, new releases, official content
-- **Viral content**: Giveaways, challenges, reactions, breaking news
-- **Content type**: Live streams, trailers, exclusives
-
 ## Configuration
 
-Edit the number of videos analyzed in `analyze_trending_videos.py`:
+### Number of Videos
 
+Edit in [analyze_trending_videos.py:449](analyze_trending_videos.py#L449):
 ```python
-num_videos = 3  # Change this to analyze more/fewer videos
+num_videos = 3  # Analyze more/fewer Shorts per trend
 ```
 
-Change region for trending videos:
+### Add Your Own Trends
 
+Edit the `get_product_trend_keywords()` function in [analyze_trending_videos.py:360](analyze_trending_videos.py#L360) to add custom trends:
 ```python
-trending_videos = get_trending_videos(max_results=num_videos, region_code='US')
-# Change 'US' to other country codes: 'CA', 'GB', 'JP', etc.
+product_trends = [
+    "your custom trend",
+    "another trend",
+    # ... existing trends
+]
 ```
 
 ## Project Structure
@@ -137,17 +142,27 @@ uofthacks/
 ├── analyze_trending_videos.py  # Main analysis script
 ├── config_template.py           # Template for API keys
 ├── config.py                    # Your API keys (gitignored)
+├── .trend_history.txt           # Tracks used trends (gitignored)
 ├── README.md                    # This file
+├── SETUP_INSTRUCTIONS.md        # Quick setup guide
 ├── .gitignore                   # Git ignore rules
 └── trending_analysis_*.json     # Output files (gitignored)
 ```
 
+## How Trends Are Selected
+
+- **First 5 runs**: Random selection from all 25+ trends
+- **After 5 runs**: Won't repeat last 5 trends used
+- **After all used**: Resets and starts fresh rotation
+- **Tracking**: `.trend_history.txt` keeps history (gitignored)
+
 ## Notes
 
-- Videos are randomized each run for variety
-- Downloaded videos are automatically cleaned up after processing
-- Rate limits: Twelve Labs has API rate limits - adjust delays if needed
-- Processing time: Each video takes 1-2 minutes to analyze
+- **Processing time**: 1-2 minutes per Short (3-6 min total per run)
+- **Rate limits**: Twelve Labs API has limits - script includes delays
+- **Randomization**: Different Shorts selected from each trend every run
+- **Auto-cleanup**: Downloaded videos deleted after processing
+- **API costs**: ~3 video analyses per run
 
 ## License
 
