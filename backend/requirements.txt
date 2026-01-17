@@ -1,0 +1,22 @@
+# Flask web framework
+flask==3.0.0
+flask-cors==4.0.0
+
+# Environment and config
+python-dotenv==1.0.0
+
+# HTTP requests
+requests==2.31.0
+
+# Google Gemini AI
+google-generativeai==0.3.2
+
+# LangGraph for orchestration (future)
+langgraph==0.0.40
+langchain-core==0.1.27
+
+# Utilities
+pydantic==2.5.0
+
+# Video analysis (existing)
+pytubefix==1.0.0
