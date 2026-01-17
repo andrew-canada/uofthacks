@@ -9,7 +9,13 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from services import product_service, trends_service, ai_optimizer
+from services import (
+    product_service, 
+    trends_service, 
+    ai_optimizer,
+    trend_matcher,
+    marketing_generator
+)
 
 products_bp = Blueprint('products', __name__)
 
@@ -294,6 +300,261 @@ def apply_recommendations(product_id):
             'message': 'Product updated successfully with trend-based recommendations',
             'product': updated_product,
             'appliedRecommendations': recommendations
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+# ============================================================
+# NEW SPLIT ENDPOINTS: Trend Matching + Marketing Generation
+# ============================================================
+
+@products_bp.route('/match-trends', methods=['POST'])
+def match_products_to_trends():
+    """
+    Step 1: Find which products match which trends.
+    
+    This endpoint ONLY identifies matches - it does NOT generate new marketing copy.
+    Use this to see which products could benefit from trend-based optimization.
+    
+    Request body (optional):
+        product_ids: List of specific product IDs to match (default: all products)
+    
+    Returns:
+        JSON with matches array showing product-trend alignments
+    """
+    try:
+        data = request.get_json() or {}
+        product_ids = data.get('product_ids')
+        
+        # Fetch products
+        if product_ids:
+            products = []
+            for pid in product_ids:
+                if not pid.startswith('gid://'):
+                    pid = f"gid://shopify/Product/{pid}"
+                product = product_service.get_product_by_id(pid)
+                if product:
+                    products.append(product)
+        else:
+            products = product_service.fetch_products()
+        
+        if not products:
+            return jsonify({
+                'success': False,
+                'error': 'No products found'
+            }), 404
+        
+        # Get product summaries
+        product_summaries = [
+            product_service.get_product_summary(p) for p in products
+        ]
+        
+        # Load trends
+        trends = trends_service.get_current_trends()
+        if not trends:
+            return jsonify({
+                'success': False,
+                'error': 'No trends data available'
+            }), 500
+        
+        trend_summaries = [
+            trends_service.get_trend_summary(t) for t in trends
+        ]
+        
+        # Run trend matching (Step 1 only)
+        match_results = trend_matcher.find_matches(product_summaries, trend_summaries)
+        
+        return jsonify({
+            'success': True,
+            **match_results,
+            'products_analyzed': len(product_summaries),
+            'trends_available': len(trend_summaries)
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@products_bp.route('/<path:product_id>/generate-marketing', methods=['POST'])
+def generate_marketing_for_product(product_id):
+    """
+    Step 2: Generate new marketing copy for a product-trend match.
+    
+    This takes a product that has been matched to a trend (from /match-trends)
+    and generates new marketing copy: title, description, SEO, etc.
+    
+    Args:
+        product_id: Shopify product GID
+    
+    Request body:
+        trend_id: The trend to align the marketing with (required)
+        
+    Returns:
+        JSON with original and generated marketing copy
+    """
+    try:
+        # Handle URL encoding
+        if not product_id.startswith('gid://'):
+            product_id = f"gid://shopify/Product/{product_id}"
+        
+        data = request.get_json() or {}
+        trend_id = data.get('trend_id')
+        
+        if not trend_id:
+            return jsonify({
+                'success': False,
+                'error': 'trend_id is required. Use /match-trends first to find matching trends.'
+            }), 400
+        
+        # Fetch the product
+        product = product_service.get_product_by_id(product_id)
+        if not product:
+            return jsonify({
+                'success': False,
+                'error': 'Product not found'
+            }), 404
+        
+        product_summary = product_service.get_product_summary(product)
+        
+        # Load trends and find the specified one
+        trends = trends_service.get_current_trends()
+        trend = next((t for t in trends if t.get('id') == trend_id), None)
+        
+        if not trend:
+            return jsonify({
+                'success': False,
+                'error': f'Trend {trend_id} not found'
+            }), 404
+        
+        trend_summary = trends_service.get_trend_summary(trend)
+        
+        # Generate marketing (Step 2)
+        result = marketing_generator.generate_marketing(
+            product_summary, 
+            trend_summary,
+            match_info=data.get('match_info')
+        )
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@products_bp.route('/match-and-generate', methods=['POST'])
+def match_and_generate():
+    """
+    Combined endpoint: Match trends AND generate marketing in one call.
+    
+    This is a convenience endpoint that combines:
+    1. /match-trends - Find matching products
+    2. /generate-marketing - Create new copy for each match
+    
+    Request body (optional):
+        product_ids: List of specific product IDs (default: all)
+        generate_for_all: If true, generate for all matches (default: false, only top match)
+    
+    Returns:
+        JSON with matches and generated marketing for each
+    """
+    try:
+        data = request.get_json() or {}
+        product_ids = data.get('product_ids')
+        generate_for_all = data.get('generate_for_all', False)
+        
+        # Step 1: Get products
+        if product_ids:
+            products = []
+            for pid in product_ids:
+                if not pid.startswith('gid://'):
+                    pid = f"gid://shopify/Product/{pid}"
+                product = product_service.get_product_by_id(pid)
+                if product:
+                    products.append(product)
+        else:
+            products = product_service.fetch_products()
+        
+        if not products:
+            return jsonify({
+                'success': False,
+                'error': 'No products found'
+            }), 404
+        
+        product_summaries = [product_service.get_product_summary(p) for p in products]
+        
+        # Create lookup dict for product summaries
+        products_lookup = {p['id']: p for p in product_summaries}
+        
+        # Step 2: Load trends
+        trends = trends_service.get_current_trends()
+        if not trends:
+            return jsonify({
+                'success': False,
+                'error': 'No trends data available'
+            }), 500
+        
+        trend_summaries = [trends_service.get_trend_summary(t) for t in trends]
+        trends_lookup = {t['id']: t for t in trend_summaries}
+        
+        # Step 3: Find matches
+        match_results = trend_matcher.find_matches(product_summaries, trend_summaries)
+        
+        if not match_results.get('success'):
+            return jsonify(match_results), 500
+        
+        # Step 4: Generate marketing for matches
+        generated_results = []
+        
+        for match in match_results.get('matches', []):
+            product_id = match.get('product_id')
+            product = products_lookup.get(product_id)
+            
+            if not product:
+                continue
+            
+            matched_trends = match.get('matched_trends', [])
+            
+            # Generate for top trend only, or all if requested
+            trends_to_generate = matched_trends if generate_for_all else matched_trends[:1]
+            
+            for trend_info in trends_to_generate:
+                trend_id = trend_info.get('trend_id')
+                trend = trends_lookup.get(trend_id)
+                
+                if not trend:
+                    continue
+                
+                gen_result = marketing_generator.generate_marketing(
+                    product, 
+                    trend,
+                    match_info=trend_info
+                )
+                
+                generated_results.append({
+                    'product_id': product_id,
+                    'product_title': match.get('product_title'),
+                    'trend_match': trend_info,
+                    'marketing': gen_result
+                })
+        
+        return jsonify({
+            'success': True,
+            'match_results': match_results,
+            'generated_marketing': generated_results,
+            'products_analyzed': len(product_summaries),
+            'matches_found': len(match_results.get('matches', [])),
+            'marketing_generated': len(generated_results)
         })
         
     except Exception as e:
