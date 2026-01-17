@@ -283,20 +283,11 @@ def analyze_video_content(video_id, video_metadata):
 
     return what_happened, reasons[:3]
 
-# ==========================================
-# MAIN EXECUTION
-# ==========================================
 
-def main():
-    print("\n" + "="*50)
-    print(" 🛠️  ROBUST TREND ANALYZER (Debug Mode)")
-    print("="*50)
-    
-    # Explicitly asking for a visually rich trend to test capabilities
-    trend = "labubu" 
-    
+def analyze_trend(trend):
+       
     # 1. Get Videos
-    videos = get_trending_videos(max_results=2, trend_filter=trend)
+    videos = get_trending_videos(max_results=3+5, trend_filter=trend) # 3 being the targeted amount
     if not videos: return
 
     # 2. Create Index (Auto-switching)
@@ -306,12 +297,16 @@ def main():
     analyzed_data = []
     
     # 3. Process
+    counter = 0
     for vid in videos:
+        if counter == 3:break
+        
         #could implement a buffer trend video logic to fix some of the videos failing issue (having 5 videos to process and processing until 2 of them are ok)
         print(f"\n🎥 Processing: {vid['title'][:50]}...")
         filename = f"temp_{vid['video_id']}.mp4"
         
         if download_video(vid['url'], filename):
+            counter +=1
             task_id = index_video(index_id, filename)
             if task_id:
                 video_id = wait_for_task(task_id)
@@ -335,6 +330,21 @@ def main():
         "sample_videos": analyzed_data
     }
     
+    return output
+    
+# ==========================================
+# MAIN EXECUTION
+# ==========================================
+
+def main():
+    print("\n" + "="*50)
+    print(" 🛠️  ROBUST TREND ANALYZER (Debug Mode)")
+    print("="*50)
+    
+    # Explicitly asking for a visually rich trend to test capabilities
+    trend = "labubu" 
+    
+    output = analyze_trend(trend)
     with open("robust_analysis.json", "w") as f:
         json.dump(output, f, indent=2)
     
