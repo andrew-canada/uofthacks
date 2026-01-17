@@ -25,6 +25,9 @@ def create_app():
     """
     app = Flask(__name__)
     
+    # Disable strict slashes to avoid 308 redirects
+    app.url_map.strict_slashes = False
+    
     # Enable CORS for all routes
     CORS(app, resources={
         r"/api/*": {
