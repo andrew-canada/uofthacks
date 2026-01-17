@@ -210,7 +210,8 @@ __marimo__/
 # API Keys and configuration
 config.py
 backend/config.py
-video_analysis/config.py
+pipeline/video_analysis/config.py
+pipeline/trend_identification/perplexity.txt
 
 # Downloaded videos (temporary files)
 *.mp4
@@ -221,13 +222,10 @@ test_video.mp4
 # JSON output files
 trending_analysis_*.json
 robust_analysis.json
-video_analysis/run-progress/
+pipeline/video_analysis/run-progress/
 
 # Trend tracking history
 .trend_history.txt
-
-# Trend identification
-.trend_identification/perplexity.txt
 
 # Shopify theme files (if accidentally added)
 shopify-theme/
