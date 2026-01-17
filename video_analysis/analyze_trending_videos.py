@@ -258,15 +258,14 @@ def analyze_video_content(video_id, video_metadata):
     # 1. Visual Narrative
     narrative_prompt = (
         "Write a detailed visual description of this video. "
-        "Describe specific actions, objects, and the setting chronologically. "
+        "Describe specific actions, especially objects, and the setting chronologically. "
         "Do not be generic."
     )
     what_happened = generate_text_robust(video_id, narrative_prompt)
     
     # 2. Trending Analysis
     trend_prompt = (
-        "List 3 reasons why this video is engaging based on its visual style and content. "
-        "Focus on editing, humor, or shock value."
+        "List 3 reasons why this video is engaging based on its visual style and content via a physical, marketable insigths. Identify material descriptions/insights about the trend."
     )
     trend_raw = generate_text_robust(video_id, trend_prompt)
     
@@ -294,7 +293,7 @@ def main():
     print("="*50)
     
     # Explicitly asking for a visually rich trend to test capabilities
-    trend = "very demure" 
+    trend = "labubu" 
     
     # 1. Get Videos
     videos = get_trending_videos(max_results=2, trend_filter=trend)
@@ -308,6 +307,7 @@ def main():
     
     # 3. Process
     for vid in videos:
+        #could implement a buffer trend video logic to fix some of the videos failing issue (having 5 videos to process and processing until 2 of them are ok)
         print(f"\n🎥 Processing: {vid['title'][:50]}...")
         filename = f"temp_{vid['video_id']}.mp4"
         
