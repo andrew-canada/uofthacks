@@ -1,0 +1,63 @@
+{
+  "id": "trend_very_mindful",
+  "name": "Very Mindful",
+  "description": "Very Mindful trend featuring very, mindful, energetic content. Characterized by food, animal, cat. Popular among Gen Z, Millennials on TikTok, Instagram, YouTube Shorts.",
+  "keywords": [
+    "very",
+    "mindful",
+    "energetic",
+    "culinary"
+  ],
+  "color_palette": [
+    "neutral",
+    "modern tones",
+    "versatile palette"
+  ],
+  "target_products": [
+    "graphic tees",
+    "hoodies",
+    "accessories",
+    "statement pieces",
+    "merchandise"
+  ],
+  "marketing_angle": "Focus on very, mindful, energetic themes. Emphasize authenticity, trend participation, and self-expression",
+  "popularity_score": 70,
+  "platforms": [
+    "TikTok",
+    "Instagram",
+    "YouTube Shorts"
+  ],
+  "demographics": [
+    "Gen Z",
+    "Millennials"
+  ],
+  "hashtags": [
+    "#verymindful"
+  ],
+  "sample_videos": [
+    {
+      "title": "very demure, very cutesy, very mindful \ud83d\ude0a",
+      "url": "https://www.youtube.com/watch?v=D4kC59duZJ8",
+      "views": 178951,
+      "likes": 5974,
+      "what_is_happening": "This video features people in a short-form content format.",
+      "why_its_trending": []
+    },
+    {
+      "title": "Very demure, very mindful, very Elegoo \ud83d\udc99\u267e\ufe0f",
+      "url": "https://www.youtube.com/watch?v=e1sh6-t3vEg",
+      "views": 261935,
+      "likes": 540,
+      "what_is_happening": "This video features food preparation or culinary content.",
+      "why_its_trending": []
+    },
+    {
+      "title": "You see how I act? Very demure, very mindful \ud83d\ude42\u200d\u2195\ufe0f @asherlara #sofimanassyan #shopping #relatable",
+      "url": "https://www.youtube.com/watch?v=A2bGRKMLVkM",
+      "views": 2179728,
+      "likes": 150860,
+      "what_is_happening": "This video features food preparation or culinary content.",
+      "why_its_trending": []
+    }
+  ]
+}

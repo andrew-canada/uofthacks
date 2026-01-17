@@ -1,0 +1,68 @@
+{
+  "id": "trend_demure",
+  "name": "Demure",
+  "description": "Demure trend featuring demure, energetic content. Characterized by person, people. Popular among Gen Z, Millennials on TikTok, Instagram, YouTube Shorts.",
+  "keywords": [
+    "demure",
+    "energetic"
+  ],
+  "color_palette": [
+    "neutral",
+    "modern tones",
+    "versatile palette"
+  ],
+  "target_products": [
+    "graphic tees",
+    "hoodies",
+    "accessories",
+    "statement pieces",
+    "merchandise"
+  ],
+  "marketing_angle": "Focus on demure, energetic themes. Emphasize authenticity, trend participation, and self-expression",
+  "popularity_score": 70,
+  "platforms": [
+    "TikTok",
+    "Instagram",
+    "YouTube Shorts"
+  ],
+  "demographics": [
+    "Gen Z",
+    "Millennials"
+  ],
+  "hashtags": [
+    "#demure",
+    "#notenoughnelsons",
+    "#largefamily",
+    "#bigfamily",
+    "#mormonvloggers",
+    "#adopted",
+    "#notenoughnelsonsadopted",
+    "#nenfam"
+  ],
+  "sample_videos": [
+    {
+      "title": "So Demure So Preppy!!! Go Check out our video Preppy VS Sigma!!! \ud83d\udc97 #16kids #demure #rizz #cracked",
+      "url": "https://www.youtube.com/watch?v=miZTyLcGp8U",
+      "views": 1156124,
+      "likes": 59782,
+      "what_is_happening": "This video compares different things about sigma mindset and masculinity.",
+      "why_its_trending": []
+    },
+    {
+      "title": "very mindful, very cutesy, very\u2728demure\u2728\ud83e\udd0c",
+      "url": "https://www.youtube.com/watch?v=ahmQLVOpykw",
+      "views": 463154,
+      "likes": 23212,
+      "what_is_happening": "This short-form video is part of the demure trend, featuring engaging content popular on social media.",
+      "why_its_trending": []
+    },
+    {
+      "title": "Is this the most DEMURE and MINDFUL bucket on the internet? \ud83e\udd70",
+      "url": "https://www.youtube.com/watch?v=G043rcV5GKk",
+      "views": 531385,
+      "likes": 29517,
+      "what_is_happening": "This short-form video is part of the demure trend, featuring engaging content popular on social media.",
+      "why_its_trending": []
+    }
+  ]
+}

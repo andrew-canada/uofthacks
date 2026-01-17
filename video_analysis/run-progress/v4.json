@@ -1,0 +1,68 @@
+{
+  "id": "trend_stanley_cup",
+  "name": "Stanley Cup",
+  "description": "Stanley Cup trend featuring stanley, cup content. Popular among Gen Z, Millennials on TikTok, Instagram, YouTube Shorts.",
+  "keywords": [
+    "stanley",
+    "cup"
+  ],
+  "color_palette": [
+    "neutral",
+    "modern tones",
+    "versatile palette"
+  ],
+  "target_products": [
+    "graphic tees",
+    "hoodies",
+    "accessories",
+    "statement pieces",
+    "merchandise"
+  ],
+  "marketing_angle": "Focus on stanley, cup themes. Emphasize authenticity, trend participation, and self-expression",
+  "popularity_score": 95,
+  "platforms": [
+    "TikTok",
+    "Instagram",
+    "YouTube Shorts"
+  ],
+  "demographics": [
+    "Gen Z",
+    "Millennials"
+  ],
+  "hashtags": [
+    "#stanleycup",
+    "#honeysuckletools",
+    "#honeysuckleshorts",
+    "#viralfoodhack",
+    "#foodhack",
+    "#tiktokfoodhack",
+    "#foodexperiment",
+    "#fruithacks"
+  ],
+  "sample_videos": [
+    {
+      "title": "12 year gap is huge \ud83d\ude2e\u200d\ud83d\udca8 #stanley #stanleycup #tumbler #icemold",
+      "url": "https://www.youtube.com/watch?v=Jfxe0MYf-h0",
+      "views": 71261895,
+      "likes": 1919475,
+      "what_is_happening": "This short-form video is part of the stanley cup trend, featuring engaging content popular on social media.",
+      "why_its_trending": []
+    },
+    {
+      "title": "Testing a 2 in 1 Drink Separator for the Stanley Cup!",
+      "url": "https://www.youtube.com/watch?v=cLxqRvN-4eo",
+      "views": 31055337,
+      "likes": 972656,
+      "what_is_happening": "This short-form video is part of the stanley cup trend, featuring engaging content popular on social media.",
+      "why_its_trending": []
+    },
+    {
+      "title": "StEvEn Destroys the Stanley Cup?!",
+      "url": "https://www.youtube.com/watch?v=e6Bk85oPwdk",
+      "views": 18640757,
+      "likes": 420677,
+      "what_is_happening": "This short-form video is part of the stanley cup trend, featuring engaging content popular on social media.",
+      "why_its_trending": []
+    }
+  ]
+}
