@@ -219,5 +219,8 @@ test_video.mp4
 # JSON output files
 trending_analysis_*.json
 
+# Trend tracking history
+.trend_history.txt
+
 # OS files
 .DS_Store
