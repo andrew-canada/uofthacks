@@ -209,6 +209,8 @@ __marimo__/
 # Project-specific
 # API Keys and configuration
 config.py
+backend/config.py
+video_analysis/config.py
 
 # Downloaded videos (temporary files)
 *.mp4
@@ -218,11 +220,18 @@ test_video.mp4
 
 # JSON output files
 trending_analysis_*.json
+robust_analysis.json
+video_analysis/run-progress/
 
 # Trend tracking history
 .trend_history.txt
 
-#trend_identification
+# Trend identification
 .trend_identification/perplexity.txt
+
+# Shopify theme files (if accidentally added)
+shopify-theme/
+snippets/
+
 # OS files
 .DS_Store

@@ -1,5 +1,8 @@
 """
 Helper utility functions.
+
+Note: These functions are currently not actively used in the codebase,
+but are kept for potential future use.
 """
 
 import re
