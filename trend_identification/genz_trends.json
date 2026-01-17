@@ -1,0 +1,197 @@
+{
+  "metadata": {
+    "query_date": "January 17, 2026",
+    "date_range": "January 03, 2026 to January 17, 2026",
+    "source": "Perplexity Sonar API",
+    "citations": [
+      "https://www.youtube.com/watch?v=qyGZ4NMsDrU",
+      "https://traveltomorrow.com/what-you-need-to-know-about-2026s-365-buttons-tiktok-trend/",
+      "https://www.youtube.com/watch?v=N5xr1bnvFY4",
+      "https://www.independent.co.uk/life-style/2016-trend-instagram-viral-explained-b2901655.html",
+      "https://ads.tiktok.com/business/en-CA/next",
+      "https://www.youtube.com/watch?v=SlGhlobZCc0"
+    ]
+  },
+  "trends": [
+    {
+      "trend_id": 1,
+      "name": "365 Buttons",
+      "description": "Users adopt the philosophy of doing one thing daily just for themselves without explaining to others, symbolized by collecting or counting 365 buttons for the year. It originated from a comment in a 2026 rebrand video emphasizing personal freedom. Some literally buy buttons to mark days, turning it into a self-care ritual.",
+      "platform": "TikTok",
+      "viral_metric": "5,340 videos with #365buttons",
+      "emergence_date": "January 2, 2026",
+      "marketability": "High - Versatile for self-care products, planners, and wellness brands targeting Gen Z autonomy"
+    },
+    {
+      "trend_id": 2,
+      "name": "2026 is the New 2016",
+      "description": "Nostalgic throwbacks to 2016 using lo-fi filters, carved eyebrows, Pokémon Go pics, and grainy iPhone shots captioned '2026 is the new 2016.' Users share decade-old archives in carousels and videos lamenting time passed. Celebrities like Selena Gomez and Charlie Puth amplify it with personal 2016 content.",
+      "platform": "TikTok/Instagram",
+      "viral_metric": "56 million videos; 452% surge in '2016' searches",
+      "emergence_date": "January 1, 2026",
+      "marketability": "High - Ideal for retro fashion, filters, and nostalgia merch drops"
+    },
+    {
+      "trend_id": 3,
+      "name": "January 2026 TikTok Mashup Dances",
+      "description": "Epic mashups compiling viral TikTok dances, transitions, and hits from early 2026, featuring high-energy edits and trending audios. Videos blend skits, dances, and remixes for non-stop scrolling vibes. Popular for challenges and FYP dominance.",
+      "platform": "TikTok/YouTube",
+      "viral_metric": "Multiple videos with 1.2M+ views in compilations",
+      "emergence_date": "January 14, 2026",
+      "marketability": "High - Perfect for dancewear, music collabs, and viral sound licensing"
+    },
+    {
+      "trend_id": 4,
+      "name": "Lock-In Mindset",
+      "description": "Gen Z publicly commits to study habits, fitness goals, and routines, sharing journeys with tight-knit online tribes for accountability and motivation. Emphasizes discipline over casual scrolling. Resonates with New Year's resolution culture.",
+      "platform": "TikTok",
+      "viral_metric": "648k posts",
+      "emergence_date": "January 2026",
+      "marketability": "High - Monetizable via planners, apps, and accountability coaching"
+    },
+    {
+      "trend_id": 5,
+      "name": "Luxury Hygiene Rituals",
+      "description": "Creators elevate simple routines like skincare and grooming into intentional self-elevation moments, treating everyday self-care as luxury maintenance. Shifts from basic to aesthetic, shareable rituals. Ties into wellness trends.",
+      "platform": "TikTok",
+      "viral_metric": "692k posts with #hygiene",
+      "emergence_date": "January 2026",
+      "marketability": "High - Strong for beauty products and premium routine kits"
+    },
+    {
+      "trend_id": 6,
+      "name": "What to Wear Crowdsource",
+      "description": "Users ask TikTok comments for outfit advice on what to wear for events, dress codes, or spotlight moments, turning closets into community decisions. Democratizes fashion choices. Expands to aesthetics and styles.",
+      "platform": "TikTok",
+      "viral_metric": "931.8k posts with #whattowear",
+      "emergence_date": "January 2026",
+      "marketability": "High - Great for fashion brands and styling apps"
+    },
+    {
+      "trend_id": 7,
+      "name": "Cooking Hacks Showoffs",
+      "description": "Quick recipe hacks evolve into hosting game days, reunions, and social events, flexing TikTok-learned skills in real-life contexts. Blends utility with entertainment. Encourages creative adaptations.",
+      "platform": "TikTok",
+      "viral_metric": "782.2k posts with #cookinghacks",
+      "emergence_date": "January 2026",
+      "marketability": "Medium - Targets kitchen gadgets and meal kit services"
+    },
+    {
+      "trend_id": 8,
+      "name": "My Makeup Type Search",
+      "description": "Audiences query TikTok search for personalized makeup types, aesthetics, and book recs based on engagement history, sparking algorithmic personalization trends. Turns search into discovery tool. Viral for beauty quizzes.",
+      "platform": "TikTok",
+      "viral_metric": "24.7k posts with #mymakeuptype",
+      "emergence_date": "January 2026",
+      "marketability": "High - Ideal for cosmetics and AI beauty tools"
+    },
+    {
+      "trend_id": 9,
+      "name": "Job Life Realities",
+      "description": "Content highlights office returns, non-traditional careers, and modern work struggles under #joblife, redefining professional vibes. Evolves from #worklife discussions. Focuses on authenticity over gloss.",
+      "platform": "TikTok",
+      "viral_metric": "235k posts with #joblife; 5.2M with #worklife",
+      "emergence_date": "January 2026",
+      "marketability": "Medium - Appeals to career apps and remote work gear"
+    },
+    {
+      "trend_id": 10,
+      "name": "NPC Mode Exit",
+      "description": "Shifts from feeling like a mindless 'non-player character' to reclaiming #maincharacterenergy with intention and presence. Rejects autopilot living. Motivational for personal growth content.",
+      "platform": "TikTok",
+      "viral_metric": "Emerging from dated #npcmode posts",
+      "emergence_date": "January 2026",
+      "marketability": "Medium - Suits motivational merch and mindset coaching"
+    },
+    {
+      "trend_id": 11,
+      "name": "Endless Scroll Hop-Out",
+      "description": "Users ditch passive FYP scrolling for active comment exploration and searches, seeking deeper engagement. Pushes for mindful consumption. Aligns with anti-doomscrolling vibes.",
+      "platform": "TikTok",
+      "viral_metric": "Tied to #endlessscroll discussions",
+      "emergence_date": "January 2026",
+      "marketability": "Low - Abstract; limited direct product ties"
+    },
+    {
+      "trend_id": 12,
+      "name": "2026 Viral Dance Beat Drop",
+      "description": "High-energy dance trends with beats like 'It pop it' and mashup audios driving challenges and compilations. Features moves synced to new 2026 hits. Spreads via mashup videos.",
+      "platform": "TikTok/YouTube",
+      "viral_metric": "2.8K views on early comps",
+      "emergence_date": "January 2026",
+      "marketability": "High - Dance challenges boost apparel and music"
+    },
+    {
+      "trend_id": 13,
+      "name": "Button Philosophy Edits",
+      "description": "Remixes and edits of Tamara's 'it only has to make sense to me' catchphrase from 365 Buttons, used as daily motivation. Spreads via duets and stitches. Core to self-empowerment narrative.",
+      "platform": "TikTok",
+      "viral_metric": "Part of 5,340 #365buttons videos",
+      "emergence_date": "January 3, 2026",
+      "marketability": "High - Quote merch and journals sell well"
+    },
+    {
+      "trend_id": 14,
+      "name": "2016 Throwback Carousels",
+      "description": "Instagram-style recap carousels of 2016 pics with hazy filters, focusing on puppy filters and old tech nostalgia. Overwhelms feeds in early 2026. Encourages archive digging.",
+      "platform": "Instagram/TikTok",
+      "viral_metric": "56 million hazy filter videos",
+      "emergence_date": "January 1, 2026",
+      "marketability": "High - Vintage photo apps and filter packs"
+    },
+    {
+      "trend_id": 15,
+      "name": "Eagles 365 Buttons",
+      "description": "NFL team Philadelphia Eagles joins 365 Buttons with branded video, tying sports fandom to personal philosophy. Inspires fan adaptations. Crosses pop culture with trends.",
+      "platform": "TikTok",
+      "viral_metric": "Viral team video views",
+      "emergence_date": "January 2026",
+      "marketability": "Medium - Sports merch crossovers"
+    },
+    {
+      "trend_id": 16,
+      "name": "Devil Wears Prada Rebrand",
+      "description": "2026 rebrand videos inspired by Devil Wears Prada aesthetics, sparking 365 Buttons origin. Pinterest-style edits with bold visuals. Fuels fashion motivation.",
+      "platform": "TikTok",
+      "viral_metric": "Origin of 5k+ button videos",
+      "emergence_date": "Late December 2025 spillover to Jan 2026",
+      "marketability": "High - Fashion and aesthetic inspo products"
+    },
+    {
+      "trend_id": 17,
+      "name": "Selena 2016 Tour Throwback",
+      "description": "Celeb-driven 2016 nostalgia with Selena Gomez posting old tour pics, inspiring fan recreations. Boosts throwback trend authenticity. Lip-syncs and carousels follow.",
+      "platform": "Instagram/TikTok",
+      "viral_metric": "Celeb amplified; 452% search surge",
+      "emergence_date": "January 2026",
+      "marketability": "High - Tour merch revivals"
+    },
+    {
+      "trend_id": 18,
+      "name": "Charlie Puth Lip-Sync Revival",
+      "description": "Charlie Puth lip-syncs his 2016 hit 'We Don’t Talk Anymore' in throwback video, riding nostalgia wave. Sparks user covers and duets. Ties music to visual trends.",
+      "platform": "TikTok",
+      "viral_metric": "Part of 56M videos",
+      "emergence_date": "January 2026",
+      "marketability": "Medium - Music streaming and covers"
+    },
+    {
+      "trend_id": 19,
+      "name": "Tumblr 365 Buttons Crossover",
+      "description": "Tumblr officially joins 365 Buttons trend, posting about self-doing philosophy. Bridges TikTok to longform platforms. Expands to moodboards and essays.",
+      "platform": "Tumblr/TikTok",
+      "viral_metric": "Platform-wide adoption",
+      "emergence_date": "January 2, 2026",
+      "marketability": "Medium - Digital journals and aesthetics"
+    },
+    {
+      "trend_id": 20,
+      "name": "2026 Dance Mashup Not Clean",
+      "description": "Explicit 'not clean' TikTok dance mashups compiling edgy viral trends and beats for mature audiences. Focuses on raw energy and transitions. Gains traction in niche dance communities.",
+      "platform": "TikTok/YouTube",
+      "viral_metric": "Emerging comps with 1M+ series views",
+      "emergence_date": "January 2026",
+      "marketability": "Medium - Edgy apparel and nightlife brands"
+    }
+  ]
+}
