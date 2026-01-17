@@ -9,7 +9,7 @@ from typing import List, Dict, Any, Optional
 import sys
 import os
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import config
 from .shopify_auth import shopify_auth
 
@@ -258,6 +258,41 @@ class ProductService:
         except requests.exceptions.RequestException as e:
             print(f'❌ Error updating product: {e}')
             raise Exception(f"Failed to update product: {e}")
+
+    def add_product_image(self, product_gids: str, attachment_base64: str, alt_text: str = '') -> Dict[str, Any]:
+      """Upload an image to a Shopify product using REST API `products/<id>/images.json`.
+
+      Args:
+        product_gids: Shopify product GID (gid://shopify/Product/<id>)
+        attachment_base64: base64 encoded image data (no data: prefix)
+        alt_text: alt text for the image
+
+      Returns:
+        Parsed JSON response from Shopify or raises Exception on failure.
+      """
+      # Extract numeric id from gid
+      try:
+        numeric = product_gids.rsplit('/', 1)[-1]
+      except Exception:
+        raise Exception('Invalid product GID')
+
+      # Build REST URL from configured graphql_url by swapping path to REST endpoint
+      try:
+        rest_base = self._config.rest_url
+      except Exception:
+        # derive from graphql url
+        rest_base = self._config.graphql_url.replace('/admin/api/2024-10/graphql.json', '')
+
+      url = f"{rest_base}/admin/api/2024-10/products/{numeric}/images.json"
+      payload = {'image': {'attachment': attachment_base64, 'alt': alt_text}}
+
+      try:
+        res = requests.post(url, json=payload, headers=self._auth.get_headers())
+        res.raise_for_status()
+        return res.json()
+      except Exception as e:
+        print(f'❌ Failed to upload product image: {e} - response: {getattr(res, "text", None)}')
+        raise
     
     def get_product_summary(self, product: Dict[str, Any]) -> Dict[str, Any]:
         """

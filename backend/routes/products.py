@@ -16,6 +16,7 @@ from services import (
     trend_matcher,
     marketing_generator
 )
+from services import image_generator
 
 products_bp = Blueprint('products', __name__)
 
@@ -294,6 +295,30 @@ def apply_recommendations(product_id):
         
         # Update the product
         updated_product = product_service.update_product(product_id, updates)
+
+        # Generate image based on recommendation (if available)
+        try:
+            # Build a prompt from the recommendations
+            prompt_parts = []
+            prompt_parts.append(recommendations.get('marketingAngle') or recommendations.get('marketing_angle') or '')
+            prompt_parts.append(recommendations.get('trendAlignment') or recommendations.get('trendAlignment') or '')
+            color = recommendations.get('colorScheme') or recommendations.get('colorScheme') or recommendations.get('color_scheme') or ''
+            if color:
+                prompt_parts.append(f"Color palette: {color}")
+            title = recommendations.get('optimizedTitle') or recommendations.get('optimized_title') or ''
+            if title:
+                prompt_parts.append(f"Product: {title}")
+
+            prompt = ' | '.join([p for p in prompt_parts if p]) or (title or 'Product image')
+
+            b64 = image_generator.generate_image_base64(prompt, size='1024x1024')
+            if b64:
+                # Upload to Shopify and attach to product
+                upload_res = product_service.add_product_image(product_id, b64, alt_text=title or 'AI generated image')
+                updated_product['_ai_image_upload'] = upload_res
+        except Exception as e:
+            # non-fatal: log and continue
+            updated_product['_ai_image_error'] = str(e)
         
         return jsonify({
             'success': True,
