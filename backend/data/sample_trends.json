@@ -1,0 +1,85 @@
+{
+  "trends": [
+    {
+      "id": "trend_001",
+      "name": "Aura Aesthetic",
+      "description": "The 'aura' trend focuses on mysterious, ethereal vibes with dark academia influences. Think moody colors, vintage-inspired pieces, and an air of sophistication.",
+      "keywords": ["mysterious", "ethereal", "dark academia", "moody", "vintage", "sophisticated", "timeless"],
+      "color_palette": ["deep burgundy", "forest green", "charcoal", "cream", "navy"],
+      "target_products": ["trench coats", "blazers", "turtlenecks", "wide-leg pants", "wool coats", "oxford shoes"],
+      "marketing_angle": "Emphasize mystery, sophistication, and timeless elegance. Use phrases like 'cultivate your aura', 'mysterious elegance', 'timeless sophistication'",
+      "popularity_score": 95,
+      "platforms": ["TikTok", "Instagram", "Pinterest"],
+      "demographics": ["Gen Z", "Young Millennials"],
+      "hashtags": ["#aura", "#darkacademia", "#mysterious", "#ethereal"]
+    },
+    {
+      "id": "trend_002",
+      "name": "Quiet Luxury",
+      "description": "Minimalist, high-quality basics without logos. Focus on craftsmanship, premium materials, and understated elegance.",
+      "keywords": ["minimalist", "premium", "timeless", "quality", "understated", "refined", "investment piece"],
+      "color_palette": ["camel", "ivory", "charcoal", "navy", "olive"],
+      "target_products": ["cashmere sweaters", "tailored pants", "classic coats", "simple tees", "leather goods", "silk shirts"],
+      "marketing_angle": "Highlight quality over quantity, craftsmanship, and investment-worthy pieces. Use 'quiet confidence', 'refined simplicity', 'investment piece'",
+      "popularity_score": 88,
+      "platforms": ["Instagram", "Pinterest"],
+      "demographics": ["Millennials", "Gen X"],
+      "hashtags": ["#quietluxury", "#oldmoney", "#minimalist", "#quality"]
+    },
+    {
+      "id": "trend_003",
+      "name": "Dopamine Dressing",
+      "description": "Bold, bright colors and playful patterns that boost mood. Fun, energetic, and unapologetically vibrant.",
+      "keywords": ["bold", "bright", "colorful", "playful", "energetic", "mood-boosting", "vibrant"],
+      "color_palette": ["hot pink", "electric blue", "sunshine yellow", "lime green", "orange"],
+      "target_products": ["statement jackets", "colorful hoodies", "bright accessories", "patterned shirts", "neon pieces"],
+      "marketing_angle": "Focus on mood-boosting, self-expression, and joy. Use 'boost your mood', 'express yourself', 'radiate positivity'",
+      "popularity_score": 82,
+      "platforms": ["TikTok", "Instagram"],
+      "demographics": ["Gen Z", "Young Millennials"],
+      "hashtags": ["#dopaminedressing", "#colorful", "#bold", "#joyful"]
+    },
+    {
+      "id": "trend_004",
+      "name": "Coastal Grandmother",
+      "description": "Relaxed, elegant coastal vibes inspired by Nancy Meyers films. Comfortable luxury with a breezy, effortless aesthetic.",
+      "keywords": ["relaxed", "elegant", "coastal", "effortless", "comfortable", "breezy", "timeless"],
+      "color_palette": ["white", "navy", "sand", "light blue", "natural linen"],
+      "target_products": ["linen pants", "oversized shirts", "lightweight sweaters", "casual blazers", "canvas bags", "loafers"],
+      "marketing_angle": "Emphasize effortless elegance, comfort, and timeless coastal style. Use 'effortlessly chic', 'coastal elegance', 'relaxed luxury'",
+      "popularity_score": 76,
+      "platforms": ["Instagram", "Pinterest", "TikTok"],
+      "demographics": ["Millennials", "Gen X"],
+      "hashtags": ["#coastalgrandmother", "#coastalstyle", "#effortless", "#relaxed"]
+    },
+    {
+      "id": "trend_005",
+      "name": "Y2K Revival",
+      "description": "Early 2000s nostalgia with low-rise jeans, butterfly clips, and metallic fabrics. Bold, playful, and nostalgic.",
+      "keywords": ["nostalgic", "retro", "playful", "bold", "shiny", "metallic", "futuristic"],
+      "color_palette": ["silver", "baby blue", "hot pink", "lavender", "chrome"],
+      "target_products": ["low-rise jeans", "crop tops", "mini skirts", "platform shoes", "metallic accessories"],
+      "marketing_angle": "Tap into nostalgia and the fun of the early 2000s. Use 'throwback vibes', 'iconic Y2K', 'retro glam'",
+      "popularity_score": 79,
+      "platforms": ["TikTok", "Instagram"],
+      "demographics": ["Gen Z"],
+      "hashtags": ["#y2k", "#2000sfashion", "#retro", "#nostalgic"]
+    },
+    {
+      "id": "trend_006",
+      "name": "Gorpcore",
+      "description": "Outdoor and hiking-inspired fashion made stylish. Functional pieces that work for both trails and streets.",
+      "keywords": ["outdoor", "functional", "practical", "adventure", "utility", "nature", "sustainable"],
+      "color_palette": ["olive", "tan", "burnt orange", "forest green", "brown"],
+      "target_products": ["hiking boots", "fleece jackets", "cargo pants", "puffer vests", "technical outerwear", "backpacks"],
+      "marketing_angle": "Blend adventure with style. Use 'trail to street', 'adventure ready', 'nature-inspired style'",
+      "popularity_score": 73,
+      "platforms": ["Instagram", "TikTok", "Pinterest"],
+      "demographics": ["Millennials", "Gen Z"],
+      "hashtags": ["#gorpcore", "#outdoorstyle", "#hikingfashion", "#functional"]
+    }
+  ],
+  "last_updated": "2026-01-17",
+  "source": "Social Media Trend Analysis",
+  "version": "1.0"
+}
