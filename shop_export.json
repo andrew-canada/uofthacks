@@ -1,0 +1,112 @@
+{
+  "exported_at": "2026-01-18T00:43:47Z",
+  "shop": {
+    "name": "Parallel Apparel",
+    "myshopifyDomain": "parallel-apparel-launchpad-totzw.myshopify.com",
+    "email": "luckykumaran3@gmail.com",
+    "primaryDomain": "parallelapparel-uofthacksdemo.myshopify.com"
+  },
+  "products_count": 4,
+  "products": [
+    {
+      "title": "Classic Crewneck",
+      "handle": "classic-crewneck",
+      "vendor": "Parallel Apparel",
+      "productType": "T-Shirts",
+      "tags": [
+        "basics",
+        "cotton",
+        "essentials"
+      ],
+      "description": "A standard fit tee made from 100% mid-weight cotton. Pre-shrunk and durable for daily wear.",
+      "descriptionHtml": "A standard fit tee made from 100% mid-weight cotton. Pre-shrunk and durable for daily wear.",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/product-tshirt_a0139096-3eb9-4aef-a287-21f60b0278c8.jpg?v=1768643188",
+          "alt": "Classic Crewneck"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "35.00"
+        }
+      ]
+    },
+    {
+      "title": "Straight-Leg Chinos",
+      "handle": "straight-leg-chinos",
+      "vendor": "Parallel Apparel",
+      "productType": "Pants",
+      "tags": [
+        "bottoms",
+        "chinos",
+        "pants"
+      ],
+      "description": "Functional trousers featuring a four-pocket design and a slight stretch for comfort.",
+      "descriptionHtml": "Functional trousers featuring a four-pocket design and a slight stretch for comfort.",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/product-pants.jpg?v=1768643035",
+          "alt": "Straight-Leg Chinos"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "85.00"
+        }
+      ]
+    },
+    {
+      "title": "Everyday Pullover",
+      "handle": "everyday-pullover",
+      "vendor": "Parallel Apparel",
+      "productType": "Hoodies",
+      "tags": [
+        "hoodies",
+        "outerwear",
+        "sweaters"
+      ],
+      "description": "A classic fleece-lined hoodie with a kangaroo pocket and ribbed cuffs. Designed for a relaxed fit.",
+      "descriptionHtml": "A classic fleece-lined hoodie with a kangaroo pocket and ribbed cuffs. Designed for a relaxed fit.",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/product-hoodie.jpg?v=1768643132",
+          "alt": "Everyday Pullover"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "75.00"
+        }
+      ]
+    },
+    {
+      "title": "City Overcoat",
+      "handle": "city-overcoat",
+      "vendor": "Parallel Apparel",
+      "productType": "Trench Coats",
+      "tags": [
+        "coats",
+        "outerwear",
+        "trench"
+      ],
+      "description": "A weather-resistant trench coat with a button-down front and adjustable wrist straps. Standard knee-length silhouette.",
+      "descriptionHtml": "A weather-resistant trench coat with a button-down front and adjustable wrist straps. Standard knee-length silhouette.",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/product-trench.jpg?v=1768643145",
+          "alt": "City Overcoat"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "150.00"
+        }
+      ]
+    }
+  ]
+}

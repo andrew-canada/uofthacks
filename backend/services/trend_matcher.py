@@ -14,7 +14,7 @@ from config import config
 
 # Conditional import for Gemini
 try:
-    import google.generativeai as genai
+    import google.genai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False

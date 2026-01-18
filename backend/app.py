@@ -7,6 +7,8 @@ import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+from flask import send_from_directory, abort
+import pathlib
 
 # Load environment variables
 load_dotenv()
@@ -76,6 +78,26 @@ def create_app():
 
 # Create the application instance
 app = create_app()
+
+# Serve demo frontend (if present) at /aura-ui
+_FRONTEND_UI_PATH = pathlib.Path(__file__).resolve().parents[0] / 'frontend' / 'aura_ui'
+
+
+@app.route('/aura-ui/')
+def aura_ui_index():
+    if not _FRONTEND_UI_PATH.exists():
+        return jsonify({'error': 'aura_ui not found', 'path': str(_FRONTEND_UI_PATH)}), 404
+    index = _FRONTEND_UI_PATH / 'index.html'
+    if not index.exists():
+        return jsonify({'error': 'index.html not found in aura_ui', 'path': str(index)}), 404
+    return send_from_directory(str(_FRONTEND_UI_PATH), 'index.html')
+
+
+@app.route('/aura-ui/<path:filename>')
+def aura_ui_static(filename):
+    if not _FRONTEND_UI_PATH.exists():
+        abort(404)
+    return send_from_directory(str(_FRONTEND_UI_PATH), filename)
 
 
 if __name__ == '__main__':

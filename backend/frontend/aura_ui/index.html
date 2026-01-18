@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aura UI - Demo</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;max-width:900px;margin:24px auto;padding:12px}
+    pre{background:#f6f8fa;padding:12px;border-radius:6px;overflow:auto}
+    button{margin-right:8px;padding:8px 12px}
+  </style>
+</head>
+<body>
+  <h1>Aura UI — Demo</h1>
+  <p>Quick local tester for the backend.</p>
+
+  <div>
+    <button id="btn-health">Get /health</button>
+    <button id="btn-config">Get /health/config</button>
+    <button id="btn-services">Get /health/services</button>
+  </div>
+
+  <h3>Response</h3>
+  <pre id="output">(click a button)</pre>
+
+  <script>
+    async function show(path){
+      const out = document.getElementById('output');
+      out.textContent = 'Loading...';
+      try{
+        const res = await fetch(path);
+        const json = await res.json();
+        out.textContent = JSON.stringify(json, null, 2);
+      }catch(e){
+        out.textContent = 'Error: '+e.message;
+      }
+    }
+    document.getElementById('btn-health').addEventListener('click',()=>show('/health'))
+    document.getElementById('btn-config').addEventListener('click',()=>show('/health/config'))
+    document.getElementById('btn-services').addEventListener('click',()=>show('/health/services'))
+  </script>
+</body>
+</html>
