@@ -14,7 +14,7 @@ import pathlib
 load_dotenv()
 
 # Import routes
-from routes import products_bp, trends_bp, health_bp
+from routes import products_bp, trends_bp, health_bp, shopify_graphql_bp
 from config import config
 
 
@@ -44,6 +44,7 @@ def create_app():
     app.register_blueprint(health_bp, url_prefix='/health')
     app.register_blueprint(products_bp, url_prefix='/api/products')
     app.register_blueprint(trends_bp, url_prefix='/api/trends')
+    app.register_blueprint(shopify_graphql_bp)
     
     # Root endpoint
     @app.route('/')

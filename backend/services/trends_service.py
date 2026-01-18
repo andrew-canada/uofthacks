@@ -100,13 +100,15 @@ class TrendsService:
             Simplified trend summary
         """
         return {
+            'id': trend.get('id', ''),
             'name': trend.get('name', ''),
             'description': trend.get('description', ''),
             'keywords': trend.get('keywords', []),
             'target_products': trend.get('target_products', []),
             'marketing_angle': trend.get('marketing_angle', ''),
             'color_palette': trend.get('color_palette', []),
-            'popularity_score': trend.get('popularity_score', 0)
+            'popularity_score': trend.get('popularity_score', 0),
+            'platforms': trend.get('platforms', [])
         }
     
     def match_trend_to_product(self, product: Dict[str, Any], trend: Dict[str, Any]) -> float:
