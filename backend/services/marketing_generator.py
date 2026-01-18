@@ -14,7 +14,7 @@ from config import config
 
 # Conditional import for Gemini
 try:
-    import google.generativeai as genai
+    import google.genai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
@@ -32,9 +32,31 @@ class MarketingGenerator:
         self._model = None
         
         if GEMINI_AVAILABLE and self._config.gemini_api_key:
-            genai.configure(api_key=self._config.gemini_api_key)
-            self._model = genai.GenerativeModel('gemini-pro')
-            print("✅ Marketing Generator: Gemini AI initialized")
+            try:
+                os.environ.setdefault('GENAI_API_KEY', self._config.gemini_api_key)
+                if hasattr(genai, 'GenerativeModel'):
+                    self._model = genai.GenerativeModel('gemini-pro')
+                    print("✅ Marketing Generator: Gemini AI initialized")
+                else:
+                    Client = getattr(genai, 'Client', None)
+                    if Client is not None:
+                        try:
+                            try:
+                                client = Client(api_key=self._config.gemini_api_key)
+                            except TypeError:
+                                client = Client()
+
+                            self._model = client
+                            print("✅ Marketing Generator: Gemini client initialized")
+                        except Exception as e:
+                            self._model = None
+                            print("⚠️ Marketing Generator: Gemini client failed to initialize:", e)
+                    else:
+                        self._model = None
+                        print("⚠️ Marketing Generator: google-genai present but no compatible model found")
+            except Exception as e:
+                self._model = None
+                print("⚠️ Marketing Generator init failed:", e)
         else:
             print("⚠️ Marketing Generator: Using template-based generation")
     
@@ -93,9 +115,9 @@ class MarketingGenerator:
         prompt = self._build_generation_prompt(product, trend, match_info)
         
         try:
-            response = self._model.generate_content(prompt)
-            response_text = self._clean_response(response.text)
-            
+            response_text = self._call_genai(prompt)
+            response_text = self._clean_response(response_text)
+
             generated = json.loads(response_text)
             
             return {
@@ -113,9 +135,65 @@ class MarketingGenerator:
         except json.JSONDecodeError as e:
             print(f'❌ Error parsing Gemini response: {e}')
             return self._template_generate(product, trend, match_info)
-        except Exception as e:
-            print(f'❌ Error in AI generation: {e}')
-            return self._template_generate(product, trend, match_info)
+
+    def _call_genai(self, prompt: str) -> str:
+        if not self._model:
+            raise RuntimeError('GenAI model not initialized')
+
+        try:
+            if hasattr(self._model, 'generate_content') and callable(self._model.generate_content):
+                resp = self._model.generate_content(prompt)
+                return getattr(resp, 'text', str(resp))
+        except Exception:
+            pass
+
+        try:
+            responses = getattr(self._model, 'responses', None)
+            if responses is not None and hasattr(responses, 'generate'):
+                try:
+                    resp = responses.generate(model='gemini-pro', input=prompt)
+                except TypeError:
+                    resp = responses.generate(model='gemini-pro', prompt=prompt)
+
+                if hasattr(resp, 'output_text'):
+                    return resp.output_text
+                if hasattr(resp, 'text'):
+                    return resp.text
+                out = getattr(resp, 'output', None)
+                if out:
+                    try:
+                        parts = []
+                        for item in out:
+                            if isinstance(item, dict):
+                                for c in item.get('content', []):
+                                    t = c.get('text') or c.get('text_raw') or c.get('markdown')
+                                    if t:
+                                        parts.append(t)
+                        if parts:
+                            return '\n'.join(parts)
+                    except Exception:
+                        pass
+                return str(resp)
+        except Exception:
+            pass
+
+        try:
+            if hasattr(self._model, 'generate_text'):
+                resp = self._model.generate_text(model='gemini-pro', input=prompt)
+                if hasattr(resp, 'text'):
+                    return resp.text
+                return str(resp)
+        except Exception:
+            pass
+
+        try:
+            if callable(self._model):
+                resp = self._model(prompt)
+                return str(resp)
+        except Exception:
+            pass
+
+        raise RuntimeError('Unable to call GenAI client with known interfaces')
     
     def _build_generation_prompt(
         self,
@@ -404,5 +482,6 @@ Return ONLY valid JSON, no other text or explanation."""
         return results
 
 
-# Global singleton instance
-marketing_generator = MarketingGenerator()
+# Note: Do not instantiate at import time to avoid calling external
+# SDKs during module import. Use services.get_marketing_generator() to
+# obtain a lazily-initialized singleton.

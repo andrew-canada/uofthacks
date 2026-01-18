@@ -14,7 +14,7 @@ from config import config
 
 # Conditional import for Gemini
 try:
-    import google.generativeai as genai
+    import google.genai as genai
     GEMINI_AVAILABLE = True
 except ImportError:
     GEMINI_AVAILABLE = False
@@ -32,9 +32,38 @@ class AIOptimizer:
         self._model = None
         
         if GEMINI_AVAILABLE and self._config.gemini_api_key:
-            genai.configure(api_key=self._config.gemini_api_key)
-            self._model = genai.GenerativeModel('gemini-pro')
-            print("✅ Gemini AI initialized")
+            try:
+                # Newer google.genai releases may not expose a global `configure()` helper.
+                # Prefer constructing a GenerativeModel if available. Some clients
+                # also respect environment vars for the API key, so set a fallback.
+                os.environ.setdefault('GENAI_API_KEY', self._config.gemini_api_key)
+
+                if hasattr(genai, 'GenerativeModel'):
+                    self._model = genai.GenerativeModel('gemini-pro')
+                    print("✅ Gemini AI initialized")
+                else:
+                    # Older/newer client may expose a Client class; attempt cautious init.
+                    Client = getattr(genai, 'Client', None)
+                    if Client is not None:
+                        try:
+                            # prefer passing the api_key if supported
+                            try:
+                                client = Client(api_key=self._config.gemini_api_key)
+                            except TypeError:
+                                client = Client()
+
+                            # use client as model proxy if it supports generation
+                            self._model = client
+                            print("✅ Gemini AI client initialized")
+                        except Exception as e:
+                            self._model = None
+                            print("⚠️ Gemini client present but failed to initialize:", e)
+                    else:
+                        self._model = None
+                        print("⚠️ google-genai present but no compatible model found")
+            except Exception as e:
+                self._model = None
+                print("⚠️ Gemini AI init failed:", e)
         else:
             print("⚠️ Gemini AI not available - using fallback optimization")
     
@@ -63,9 +92,10 @@ class AIOptimizer:
         prompt = self._build_analysis_prompt(products_json, trends_json)
         
         try:
-            response = self._model.generate_content(prompt)
-            response_text = self._clean_response(response.text)
-            
+            # Use adapter to support multiple genai client APIs
+            response_text = self._call_genai(prompt)
+            response_text = self._clean_response(response_text)
+
             analysis_results = json.loads(response_text)
             
             return {
@@ -159,6 +189,77 @@ Return ONLY the JSON array, no other text."""
             text = text[:-3]
         
         return text.strip()
+
+    def _call_genai(self, prompt: str) -> str:
+        """
+        Adapter to call various google.genai client APIs and return text.
+        Tries known call shapes and returns the textual response.
+        """
+        if not self._model:
+            raise RuntimeError('GenAI model not initialized')
+
+        # 1) direct helper
+        try:
+            if hasattr(self._model, 'generate_content') and callable(self._model.generate_content):
+                resp = self._model.generate_content(prompt)
+                return getattr(resp, 'text', str(resp))
+        except Exception:
+            pass
+
+        # 2) client.responses.generate(...) pattern
+        try:
+            responses = getattr(self._model, 'responses', None)
+            if responses is not None and hasattr(responses, 'generate'):
+                # try common kw names
+                try:
+                    resp = responses.generate(model='gemini-pro', input=prompt)
+                except TypeError:
+                    resp = responses.generate(model='gemini-pro', prompt=prompt)
+
+                # common response fields
+                if hasattr(resp, 'output_text'):
+                    return resp.output_text
+                if hasattr(resp, 'text'):
+                    return resp.text
+                # attempt structured access
+                out = getattr(resp, 'output', None)
+                if out:
+                    try:
+                        # attempt to extract nested text
+                        parts = []
+                        for item in out:
+                            if isinstance(item, dict):
+                                for c in item.get('content', []):
+                                    t = c.get('text') or c.get('text_raw') or c.get('markdown')
+                                    if t:
+                                        parts.append(t)
+                        if parts:
+                            return '\n'.join(parts)
+                    except Exception:
+                        pass
+                return str(resp)
+        except Exception:
+            pass
+
+        # 3) older client.generate_text / generate methods
+        try:
+            if hasattr(self._model, 'generate_text'):
+                resp = self._model.generate_text(model='gemini-pro', input=prompt)
+                if hasattr(resp, 'text'):
+                    return resp.text
+                return str(resp)
+        except Exception:
+            pass
+
+        # 4) last resort: call __call__ or str()
+        try:
+            if callable(self._model):
+                resp = self._model(prompt)
+                return str(resp)
+        except Exception:
+            pass
+
+        raise RuntimeError('Unable to call GenAI client with known interfaces')
     
     def _fallback_analysis(
         self, 
@@ -313,5 +414,6 @@ Return ONLY the JSON array, no other text."""
         return None
 
 
-# Global singleton instance
-ai_optimizer = AIOptimizer()
+# Note: Do not instantiate at import time to avoid calling external
+# SDKs during module import. Use services.get_ai_optimizer() to
+# obtain a lazily-initialized singleton.

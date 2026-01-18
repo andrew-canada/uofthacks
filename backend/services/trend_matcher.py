@@ -32,9 +32,31 @@ class TrendMatcher:
         self._model = None
         
         if GEMINI_AVAILABLE and self._config.gemini_api_key:
-            genai.configure(api_key=self._config.gemini_api_key)
-            self._model = genai.GenerativeModel('gemini-pro')
-            print("✅ Trend Matcher: Gemini AI initialized")
+            try:
+                os.environ.setdefault('GENAI_API_KEY', self._config.gemini_api_key)
+                if hasattr(genai, 'GenerativeModel'):
+                    self._model = genai.GenerativeModel('gemini-pro')
+                    print("✅ Trend Matcher: Gemini AI initialized")
+                else:
+                    Client = getattr(genai, 'Client', None)
+                    if Client is not None:
+                        try:
+                            try:
+                                client = Client(api_key=self._config.gemini_api_key)
+                            except TypeError:
+                                client = Client()
+
+                            self._model = client
+                            print("✅ Trend Matcher: Gemini client initialized")
+                        except Exception as e:
+                            self._model = None
+                            print("⚠️ Trend Matcher: Gemini client failed to initialize:", e)
+                    else:
+                        self._model = None
+                        print("⚠️ Trend Matcher: google-genai present but no compatible model found")
+            except Exception as e:
+                self._model = None
+                print("⚠️ Trend Matcher init failed:", e)
         else:
             print("⚠️ Trend Matcher: Using rule-based matching")
     
@@ -87,9 +109,9 @@ class TrendMatcher:
         prompt = self._build_match_prompt(products, trends)
         
         try:
-            response = self._model.generate_content(prompt)
-            response_text = self._clean_response(response.text)
-            
+            response_text = self._call_genai(prompt)
+            response_text = self._clean_response(response_text)
+
             result = json.loads(response_text)
             result['method'] = 'gemini'
             result['success'] = True
@@ -102,6 +124,66 @@ class TrendMatcher:
         except Exception as e:
             print(f'❌ Error in AI matching: {e}')
             return self._rule_based_match(products, trends)
+
+    def _call_genai(self, prompt: str) -> str:
+        if not self._model:
+            raise RuntimeError('GenAI model not initialized')
+
+        # Try same strategies as AIOptimizer
+        try:
+            if hasattr(self._model, 'generate_content') and callable(self._model.generate_content):
+                resp = self._model.generate_content(prompt)
+                return getattr(resp, 'text', str(resp))
+        except Exception:
+            pass
+
+        try:
+            responses = getattr(self._model, 'responses', None)
+            if responses is not None and hasattr(responses, 'generate'):
+                try:
+                    resp = responses.generate(model='gemini-pro', input=prompt)
+                except TypeError:
+                    resp = responses.generate(model='gemini-pro', prompt=prompt)
+
+                if hasattr(resp, 'output_text'):
+                    return resp.output_text
+                if hasattr(resp, 'text'):
+                    return resp.text
+                out = getattr(resp, 'output', None)
+                if out:
+                    try:
+                        parts = []
+                        for item in out:
+                            if isinstance(item, dict):
+                                for c in item.get('content', []):
+                                    t = c.get('text') or c.get('text_raw') or c.get('markdown')
+                                    if t:
+                                        parts.append(t)
+                        if parts:
+                            return '\n'.join(parts)
+                    except Exception:
+                        pass
+                return str(resp)
+        except Exception:
+            pass
+
+        try:
+            if hasattr(self._model, 'generate_text'):
+                resp = self._model.generate_text(model='gemini-pro', input=prompt)
+                if hasattr(resp, 'text'):
+                    return resp.text
+                return str(resp)
+        except Exception:
+            pass
+
+        try:
+            if callable(self._model):
+                resp = self._model(prompt)
+                return str(resp)
+        except Exception:
+            pass
+
+        raise RuntimeError('Unable to call GenAI client with known interfaces')
     
     def _build_match_prompt(
         self, 
@@ -296,5 +378,6 @@ Return ONLY valid JSON, no other text."""
         return matched_trends
 
 
-# Global singleton instance
-trend_matcher = TrendMatcher()
+# Note: Do not instantiate at import time to avoid calling external
+# SDKs during module import. Use services.get_trend_matcher() to
+# obtain a lazily-initialized singleton.
