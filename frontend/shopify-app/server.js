@@ -18,7 +18,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Shopify configuration
 const SHOPIFY_SHOP_DOMAIN = process.env.SHOPIFY_SHOP_DOMAIN;
 const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
+const SHOPIFY_API_KEY = process.env.SHOPIFY_API_KEY;
+const SHOPIFY_API_SECRET = process.env.SHOPIFY_API_SECRET;
 const SHOPIFY_API_VERSION = '2025-01';
+const SHOPIFY_SCOPES = 'read_products,write_products,read_product_listings,write_product_listings';
 
 // Helper function to make Shopify API requests
 async function shopifyRequest(endpoint, method = 'GET', body = null) {
@@ -49,6 +52,44 @@ async function shopifyRequest(endpoint, method = 'GET', body = null) {
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Product Suggestions API is running' });
+});
+
+// App installation route - redirects to Shopify OAuth
+app.get('/install', (req, res) => {
+  const shop = req.query.shop;
+
+  if (!shop) {
+    return res.status(400).send('Missing shop parameter');
+  }
+
+  const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=${SHOPIFY_SCOPES}&redirect_uri=${encodeURIComponent(process.env.SHOPIFY_REDIRECT_URI || `${req.protocol}://${req.get('host')}/callback`)}`;
+
+  res.redirect(installUrl);
+});
+
+// OAuth callback route
+app.get('/callback', async (req, res) => {
+  const { shop, code } = req.query;
+
+  if (!shop || !code) {
+    return res.status(400).send('Missing required parameters');
+  }
+
+  // In production, you'd exchange the code for an access token here
+  // For now, redirect to the embedded app
+  res.redirect(`/embedded.html?shop=${shop}&apiKey=${SHOPIFY_API_KEY}`);
+});
+
+// Embedded app route (serves the Shopify admin embedded version)
+app.get('/app', (req, res) => {
+  const shop = req.query.shop;
+  const host = req.query.host;
+
+  if (!shop) {
+    return res.status(400).send('Missing shop parameter. Please install the app first.');
+  }
+
+  res.redirect(`/embedded.html?shop=${shop}&host=${host || ''}&apiKey=${SHOPIFY_API_KEY}`);
 });
 
 // Endpoint to replace product in collection

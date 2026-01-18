@@ -40,6 +40,18 @@ For each trend, provide:
 - emergence_date (when it started)
 - marketability (High/Medium/Low with brief reason)
 
+These trends should be DIFFERENT from:
+ - Turning Chinese / Becoming Chinese
+ - 365 Buttons
+ - AI Baby Dancing
+ - ICM Triplets Dance
+ - #2016 Nostalgia
+ - January 2026 Mashup Dance
+ - TikTok Dance Mashup Compilations
+ - Party Music Viral Dance Trends
+ - Viral Song Mashup Trends
+ - Unfiltered BTS & Real Process Content
+
 Return ONLY a valid JSON object in this exact format:
 {{
   "trends": [

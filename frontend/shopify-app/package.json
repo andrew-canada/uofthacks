@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@shopify/app-bridge": "^3.7.11",
+    "@shopify/app-bridge-utils": "^3.5.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1"
