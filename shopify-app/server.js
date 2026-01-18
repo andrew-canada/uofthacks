@@ -56,8 +56,22 @@ async function connectToMongoDB() {
   }
 }
 
-// Middleware
-app.use(cors());
+// Middleware - CORS configured for iframe embedding (Shopify App Bridge)
+app.use(cors({
+  origin: true, // Allow all origins (or specify: ['https://admin.shopify.com', 'https://*.myshopify.com'])
+  credentials: true, // Allow cookies/auth headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Remove X-Frame-Options to allow iframe embedding
+app.use((req, res, next) => {
+  res.removeHeader('X-Frame-Options');
+  // Allow embedding in Shopify admin
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://admin.shopify.com https://*.myshopify.com;");
+  next();
+});
+
 app.use(express.json());
 
 // Serve static files from 'public' directory
