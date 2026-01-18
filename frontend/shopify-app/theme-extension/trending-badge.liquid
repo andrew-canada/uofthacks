@@ -1,0 +1,23 @@
+{%- comment -%}
+  Trending Badge Theme Extension
+  
+  This snippet can be included in theme templates to display trending badges.
+  It reads product badges from metafields (namespace: trending_ui, key: badge)
+  
+  Usage in theme:
+  {% render 'trending-badge', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign badge_metafield = product.metafields.trending_ui.badge.value
+  if badge_metafield == blank
+    assign badge_metafield = null
+  endif
+-%}
+
+{%- if badge_metafield and badge_metafield.visible -%}
+  <span class="trending-badge badge-{{ badge_metafield.type }}" 
+        style="position: absolute; top: 10px; right: 10px; background: {% case badge_metafield.type %}{% when 'trending' %}#ff6b6b{% when 'hot' %}#ff4757{% when 'new' %}#5f27cd{% when 'popular' %}#ffb800{% when 'limited' %}#ff3838{% else %}#667eea{% endcase %}; color: white; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+    {{ badge_metafield.text | default: badge_metafield.type }}
+  </span>
+{%- endif -%}

@@ -1,0 +1,179 @@
+{
+  "exported_at": "2026-01-18T07:43:58Z",
+  "shop": {
+    "name": "Parallel Apparel",
+    "myshopifyDomain": "parallel-apparel-launchpad-totzw.myshopify.com",
+    "email": "luckykumaran3@gmail.com",
+    "primaryDomain": "parallelapparel-uofthacksdemo.myshopify.com"
+  },
+  "products_count": 5,
+  "products": [
+    {
+      "title": "Classic Crewneck",
+      "handle": "classic-crewneck",
+      "vendor": "Parallel Apparel",
+      "productType": "T-Shirts",
+      "tags": [
+        "basics",
+        "cotton",
+        "essentials"
+      ],
+      "description": "A classic crewneck is a timeless top defined by its round, collarless neckline that sits close to the base of the neck. It’s commonly made from cotton, fleece, or knit fabric, offering comfort and versatility",
+      "descriptionHtml": "<p><meta charset=\"utf-8\">A <strong data-start=\"2\" data-end=\"22\">classic crewneck</strong> is a timeless top defined by its <strong data-start=\"56\" data-end=\"86\">round, collarless neckline</strong> that sits close to the base of the neck. It’s commonly made from <strong data-start=\"152\" data-end=\"186\">cotton, fleece, or knit fabric</strong>, offering comfort and versatility</p>",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/product-tshirt_a0139096-3eb9-4aef-a287-21f60b0278c8.jpg?v=1768643188",
+          "alt": "Classic Crewneck"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "31.50"
+        }
+      ],
+      "metafields": [
+        {
+          "namespace": "ai_optimizer",
+          "key": "layout_style",
+          "type": "single_line_text_field",
+          "value": "luxury"
+        },
+        {
+          "namespace": "ai_optimizer",
+          "key": "color_scheme",
+          "type": "single_line_text_field",
+          "value": "camel"
+        },
+        {
+          "namespace": "ai_optimizer",
+          "key": "show_countdown",
+          "type": "boolean",
+          "value": "false"
+        },
+        {
+          "namespace": "ai_optimizer",
+          "key": "trust_badges",
+          "type": "json",
+          "value": "[\"premium\",\"handcrafted\",\"limited-edition\"]"
+        },
+        {
+          "namespace": "ai_optimizer",
+          "key": "trend_alignment",
+          "type": "single_line_text_field",
+          "value": "Quiet Luxury"
+        },
+        {
+          "namespace": "ai_optimizer",
+          "key": "marketing_angle",
+          "type": "single_line_text_field",
+          "value": "Highlight quality over quantity, craftsmanship, and investment-worthy pieces."
+        },
+        {
+          "namespace": "global",
+          "key": "title_tag",
+          "type": "string",
+          "value": "Classic Crewneck | Quiet Luxury Style | Shop Now"
+        },
+        {
+          "namespace": "global",
+          "key": "description_tag",
+          "type": "string",
+          "value": "Elevate your presence..."
+        }
+      ]
+    },
+    {
+      "title": "Classic Boots",
+      "handle": "classic-leather-shoes-1",
+      "vendor": "Trending Shoes",
+      "productType": "Shoes",
+      "tags": [
+        "placeholder",
+        "shoes",
+        "trending"
+      ],
+      "description": "Classic boots are timeless footwear designed for both style and durability. They typically feature a sturdy sole, enclosed heel, and ankle-high or taller shaft, providing support and protection. Made from materials like leather or suede, classic boots often have clean lines and minimal detailing, which gives them a versatile, refined look.",
+      "descriptionHtml": "<p><meta charset=\"utf-8\"><strong data-start=\"0\" data-end=\"17\" data-is-only-node=\"\">Classic boots</strong> are timeless footwear designed for both style and durability. They typically feature a <strong data-start=\"105\" data-end=\"120\">sturdy sole</strong>, <strong data-start=\"122\" data-end=\"139\">enclosed heel</strong>, and <strong data-start=\"145\" data-end=\"175\">ankle-high or taller shaft</strong>, providing support and protection. Made from materials like <strong data-start=\"236\" data-end=\"256\">leather or suede</strong>, classic boots often have clean lines and minimal detailing, which gives them a versatile, refined look.</p>",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/download_1.jpg?v=1768712189"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "55.00"
+        }
+      ]
+    },
+    {
+      "title": "Trench Coat",
+      "handle": "classic-leather-shoes",
+      "vendor": "Trending Shoes",
+      "productType": "Shoes",
+      "tags": [
+        "placeholder",
+        "shoes",
+        "trending"
+      ],
+      "description": "A trench coat is a long, lightweight coat traditionally made from water-resistant fabric, designed to protect against rain and wind. It typically features a double-breasted front, wide lapels, shoulder epaulettes, a belted waist, and often storm flaps for added protection.",
+      "descriptionHtml": "<p><meta charset=\"utf-8\">A <strong data-start=\"2\" data-end=\"17\">trench coat</strong> is a long, lightweight coat traditionally made from water-resistant fabric, designed to protect against rain and wind. It typically features a <strong data-start=\"161\" data-end=\"186\">double-breasted front</strong>, <strong data-start=\"188\" data-end=\"203\">wide lapels</strong>, <strong data-start=\"205\" data-end=\"228\">shoulder epaulettes</strong>, <strong data-start=\"230\" data-end=\"248\">a belted waist</strong>, and often <strong data-start=\"260\" data-end=\"275\">storm flaps</strong> for added protection.</p>",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/shopping.webp?v=1768712006"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "250.00"
+        }
+      ]
+    },
+    {
+      "title": "Jeans",
+      "handle": "classic-leather-shoes-2",
+      "vendor": "Trending Shoes",
+      "productType": "Shoes",
+      "tags": [
+        "placeholder",
+        "shoes",
+        "trending"
+      ],
+      "description": "Jeans are a type of casual pants typically made from denim, a durable cotton fabric. They are known for their sturdy construction, usually featuring riveted pockets, a zipper or button fly, and belt loops. Originally designed as workwear because of their strength, jeans have become a universal fashion staple worn by people of all ages.",
+      "descriptionHtml": "<p><meta charset=\"utf-8\">Jeans are a type of casual pants typically made from <strong data-start=\"53\" data-end=\"62\">denim</strong>, a durable cotton fabric. They are known for their <strong data-start=\"114\" data-end=\"137\">sturdy construction</strong>, usually featuring <strong data-start=\"157\" data-end=\"176\">riveted pockets</strong>, a <strong data-start=\"180\" data-end=\"204\">zipper or button fly</strong>, and belt loops. Originally designed as <strong data-start=\"245\" data-end=\"257\">workwear</strong> because of their strength, jeans have become a universal fashion staple worn by people of all ages.</p>",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/0798/7596/5186/files/AU00006-002_LF.jpg?v=1768711859"
+        }
+      ],
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "40.00"
+        }
+      ]
+    },
+    {
+      "title": "Trendy Sneakers Collection",
+      "handle": "trendy-sneakers-collection",
+      "vendor": "Fashion Forward",
+      "productType": "Shoes",
+      "tags": [
+        "limited-edition",
+        "new",
+        "sneakers",
+        "trending"
+      ],
+      "description": "New arrival! Limited edition sneakers based on current trends.",
+      "descriptionHtml": "<p>New arrival! Limited edition sneakers based on current trends.</p>",
+      "variants": [
+        {
+          "title": "Default Title",
+          "price": "0.00"
+        }
+      ]
+    }
+  ]
+}

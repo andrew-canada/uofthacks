@@ -1,0 +1,26 @@
+{
+  "_comment": "Example Cursor MCP Server Configuration",
+  "_instructions": "Copy this into your Cursor User Settings JSON (Ctrl+Shift+P -> 'Preferences: Open User Settings (JSON)')",
+  "_note": "Update all file paths to match your actual project location!",
+  
+  "mcp.servers": {
+    "uofthacks-trends": {
+      "command": "python",
+      "args": [
+        "C:/work/project/git-repo/uofthacks/mcp-servers/trends-server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "C:/work/project/git-repo/uofthacks/backend"
+      }
+    },
+    "uofthacks-project-data": {
+      "command": "python",
+      "args": [
+        "C:/work/project/git-repo/uofthacks/mcp-servers/project-data-server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "C:/work/project/git-repo/uofthacks/backend"
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ from random import choice
 # CONFIGURATION
 # ==========================================
 try:
-    from config import YOUTUBE_API_KEY, TWELVE_LABS_BASE_URL,TWELVE_LABS_API_KEY, TWELVE_LABS_API_KEYS# ,TWELVE_LABS_API_KEY
+    from config import YOUTUBE_API_KEY, TWELVE_LABS_BASE_URL, TWELVE_LABS_API_KEY
 except ImportError:
     print("❌ Error: config.py not found! Please ensure your keys are set.")
     # You can set defaults here if needed for testing
@@ -346,18 +346,24 @@ def main():
     print("\n" + "="*50)
     print(" 🛠️  ROBUST TREND ANALYZER (Debug Mode)")
     print("="*50)
-    
-    # Explicitly asking for a visually rich trend to test capabilities
-    trend = "labubu" 
-    
-    output = analyze_trend(trend)
-    with open("robust_analysis.json", "w") as f:
-        json.dump(output, f, indent=2)
-    
-    print("\n✅ Analysis saved to robust_analysis.json")
-    if analyzed_data:
-        print("\n--- SAMPLE OUTPUT ---")
-        print(f"What: {analyzed_data[0]['what_is_happening'][:150]}...")
+
+    TRENDS = [
+        "chill guy",
+        "aura",
+        "off-duty ceo",
+    ]
+
+    combined = {"analyses": []}
+    for trend in TRENDS:
+        print(f"\n>>> Analyzing trend: '{trend}'")
+        result = analyze_trend(trend)
+        combined["analyses"].append({"trend": trend, "result": result})
+
+    out_path = "robust_analysis.json"
+    with open(out_path, "w", encoding='utf-8') as f:
+        json.dump(combined, f, indent=2)
+
+    print(f"\n✅ Combined analysis saved to {out_path}")
 
 if __name__ == "__main__":
     main()
