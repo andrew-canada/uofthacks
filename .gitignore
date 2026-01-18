@@ -208,8 +208,6 @@ __marimo__/
 
 # Project-specific
 # API Keys and configuration
-config.py
-backend/config.py
 pipeline/video_analysis/config.py
 pipeline/trend_identification/perplexity.txt
 
