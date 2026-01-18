@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Suggestions - Shopify Admin</title>
+  <script src="https://unpkg.com/@shopify/app-bridge@3"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f6f6f7;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      color: #202223;
+      margin-bottom: 8px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      color: #6d7175;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+
+    .suggestion-box {
+      background: #f6f6f7;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .suggestion-text {
+      color: #202223;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .preview-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .preview-card {
+      flex: 1;
+      text-align: center;
+    }
+
+    .preview-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6d7175;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .preview-content {
+      background: #f6f6f7;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #e1e3e5;
+    }
+
+    .preview-content img {
+      width: 100px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    .blank-placeholder {
+      width: 100px;
+      height: 120px;
+      background: #e1e3e5;
+      border: 2px dashed #8c9196;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      color: #6d7175;
+      font-size: 11px;
+    }
+
+    .preview-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #202223;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .preview-arrow {
+      font-size: 20px;
+      color: #005bd3;
+      font-weight: bold;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-get {
+      background: #005bd3;
+      color: white;
+    }
+
+    .btn-get:hover {
+      background: #004c9a;
+    }
+
+    .btn-accept {
+      background: #008060;
+      color: white;
+    }
+
+    .btn-accept:hover {
+      background: #006e52;
+    }
+
+    .btn-reject {
+      background: #e1e3e5;
+      color: #202223;
+    }
+
+    .btn-reject:hover {
+      background: #c9cccf;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-align: center;
+      display: none;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: #d1f7c4;
+      color: #006644;
+      border: 1px solid #9ee37e;
+    }
+
+    .status.error {
+      background: #fed3d1;
+      color: #8a1f11;
+      border: 1px solid #fda29b;
+    }
+
+    .status.info {
+      background: #e3f3ff;
+      color: #003c71;
+      border: 1px solid #b4dff6;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Product Suggestion System</h1>
+    <p class="subtitle">Replace clothing items with shoes to diversify your product display</p>
+
+    <div class="suggestion-box">
+      <p class="suggestion-text">
+        <strong>Suggestion:</strong> Replace a random clothing item with shoes to diversify your product display.
+      </p>
+
+      <div id="preview" class="preview-section hidden">
+        <div class="preview-card">
+          <span class="preview-label">CURRENT ITEM</span>
+          <div class="preview-content">
+            <img id="current-img" src="" alt="Current product">
+            <div id="current-title" class="preview-title">Loading...</div>
+          </div>
+        </div>
+
+        <div class="preview-arrow">→</div>
+
+        <div class="preview-card">
+          <span class="preview-label">SUGGESTED REPLACEMENT</span>
+          <div class="preview-content">
+            <div class="blank-placeholder">Shoe Placeholder</div>
+            <div class="preview-title">Classic Leather Shoes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button id="btn-get" class="btn-get">Get Suggestion</button>
+      </div>
+
+      <div id="decision-buttons" class="button-group hidden">
+        <button id="btn-accept" class="btn-accept">Accept</button>
+        <button id="btn-reject" class="btn-reject">Reject</button>
+      </div>
+
+      <div id="status" class="status"></div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Shopify App Bridge
+    const urlParams = new URLSearchParams(window.location.search);
+    const shop = urlParams.get('shop');
+    const host = urlParams.get('host');
+
+    let app;
+    if (shop && host) {
+      try {
+        app = window.AppBridge.createApp({
+          apiKey: new URLSearchParams(window.location.search).get('apiKey') || 'YOUR_API_KEY',
+          host: host,
+        });
+        console.log('App Bridge initialized');
+      } catch (error) {
+        console.error('Error initializing App Bridge:', error);
+      }
+    }
+
+    const API_BASE = window.location.origin;
+    let currentSuggestion = null;
+    let allProducts = [];
+
+    // DOM elements
+    const btnGet = document.getElementById('btn-get');
+    const btnAccept = document.getElementById('btn-accept');
+    const btnReject = document.getElementById('btn-reject');
+    const preview = document.getElementById('preview');
+    const decisionButtons = document.getElementById('decision-buttons');
+    const status = document.getElementById('status');
+    const currentImg = document.getElementById('current-img');
+    const currentTitle = document.getElementById('current-title');
+
+    // Show status message
+    function showStatus(message, type = 'info') {
+      status.textContent = message;
+      status.className = `status show ${type}`;
+      setTimeout(() => {
+        status.classList.remove('show');
+      }, 5000);
+    }
+
+    // Load products
+    async function loadProducts() {
+      try {
+        const response = await fetch(`${API_BASE}/api/products`);
+        const data = await response.json();
+
+        if (data.success) {
+          allProducts = data.products;
+          console.log(`Loaded ${allProducts.length} products`);
+        } else {
+          throw new Error(data.error || 'Failed to load products');
+        }
+      } catch (error) {
+        console.error('Error loading products:', error);
+        showStatus('Error loading products: ' + error.message, 'error');
+      }
+    }
+
+    // Generate suggestion
+    function generateSuggestion() {
+      if (allProducts.length === 0) {
+        showStatus('No products available. Please check your Shopify store.', 'error');
+        return;
+      }
+
+      // Pick a random product
+      const randomProduct = allProducts[Math.floor(Math.random() * allProducts.length)];
+
+      currentSuggestion = {
+        product: randomProduct
+      };
+
+      // Update UI
+      const imageUrl = randomProduct.images && randomProduct.images[0]
+        ? randomProduct.images[0].src
+        : 'https://via.placeholder.com/100x120?text=No+Image';
+
+      currentImg.src = imageUrl;
+      currentTitle.textContent = randomProduct.title;
+
+      preview.classList.remove('hidden');
+      decisionButtons.classList.remove('hidden');
+      btnGet.classList.add('hidden');
+    }
+
+    // Accept suggestion
+    async function acceptSuggestion() {
+      if (!currentSuggestion) return;
+
+      btnAccept.disabled = true;
+      btnReject.disabled = true;
+      showStatus('Creating shoe product and replacing in all collections...', 'info');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/create-and-replace`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productIdToReplace: currentSuggestion.product.id
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to replace product');
+        }
+
+        console.log('Replacement successful:', data);
+        showStatus(`✅ Product replaced successfully! Updated ${data.data.collectionsUpdated} collections.`, 'success');
+
+        // Reload products to reflect changes
+        await loadProducts();
+
+        // Show toast in Shopify admin if App Bridge is available
+        if (app && window.AppBridge.Toast) {
+          const toastNotice = window.AppBridge.Toast.create(app, {
+            message: `Product replaced successfully! Updated ${data.data.collectionsUpdated} collections.`,
+            duration: 5000,
+          });
+          toastNotice.dispatch(window.AppBridge.Toast.Action.SHOW);
+        }
+
+        setTimeout(() => {
+          resetSuggestion();
+        }, 3000);
+
+      } catch (error) {
+        console.error('Error accepting suggestion:', error);
+        showStatus('Error: ' + error.message, 'error');
+        btnAccept.disabled = false;
+        btnReject.disabled = false;
+      }
+    }
+
+    // Reject suggestion
+    function rejectSuggestion() {
+      showStatus('Suggestion rejected. Click "Get Suggestion" for another.', 'info');
+      resetSuggestion();
+    }
+
+    // Reset UI
+    function resetSuggestion() {
+      currentSuggestion = null;
+      preview.classList.add('hidden');
+      decisionButtons.classList.add('hidden');
+      btnGet.classList.remove('hidden');
+      btnAccept.disabled = false;
+      btnReject.disabled = false;
+    }
+
+    // Event listeners
+    btnGet.addEventListener('click', generateSuggestion);
+    btnAccept.addEventListener('click', acceptSuggestion);
+    btnReject.addEventListener('click', rejectSuggestion);
+
+    // Initialize
+    loadProducts();
+  </script>
+</body>
+</html>
