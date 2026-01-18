@@ -110,10 +110,13 @@ async function shopifyRequest(endpoint, method = 'GET', body = null) {
 
   if (!response.ok) {
     const error = await response.text();
+    console.error(`[Shopify API] Error ${response.status}:`, error);
     throw new Error(`Shopify API error: ${response.status} - ${error}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  console.log(`[Shopify API] Success: ${method} ${endpoint}`);
+  return data;
 }
 
 // Health check
@@ -854,21 +857,36 @@ app.post('/api/suggestions', async (req, res) => {
 app.post('/api/suggestions/:id/accept', async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(`[Accept] Processing suggestion: ${id}`);
     
     let suggestion;
     try {
+      // Try finding by ObjectId first
       suggestion = await suggestionsCollection.findOne({ _id: new ObjectId(id) });
     } catch (e) {
-      // Try finding by string id field for backward compatibility
+      // ObjectId parse failed - try finding by string _id (e.g., "demo1")
+      console.log(`[Accept] ObjectId parse failed, trying string _id lookup`);
+      suggestion = await suggestionsCollection.findOne({ _id: id });
+    }
+    
+    // If still not found, also check legacy 'id' field
+    if (!suggestion) {
       suggestion = await suggestionsCollection.findOne({ id: id });
     }
 
     if (!suggestion) {
+      console.log(`[Accept] Suggestion not found: ${id}`);
       return res.status(404).json({
         success: false,
         error: 'Suggestion not found'
       });
     }
+
+    console.log(`[Accept] Found suggestion:`, {
+      type: suggestion.type,
+      status: suggestion.status,
+      productId: suggestion.data?.productId
+    });
 
     if (suggestion.status !== 'pending') {
       return res.status(400).json({
@@ -882,6 +900,7 @@ app.post('/api/suggestions/:id/accept', async (req, res) => {
     // Apply the suggestion based on type
     switch (suggestion.type) {
       case 'new-product':
+        console.log(`[Accept] Creating new product:`, suggestion.data.product?.title);
         result = await shopifyRequest('products.json', 'POST', {
           product: suggestion.data.product
         });
@@ -889,6 +908,7 @@ app.post('/api/suggestions/:id/accept', async (req, res) => {
         break;
 
       case 'price-change':
+        console.log(`[Accept] Updating price for product ${suggestion.data.productId}`);
         const priceUpdateData = {
           product: {
             variants: [{
@@ -902,16 +922,25 @@ app.post('/api/suggestions/:id/accept', async (req, res) => {
         break;
 
       case 'description-change':
+        console.log(`[Accept] Updating description for product ${suggestion.data.productId}`);
+        console.log(`[Accept] New description:`, suggestion.data.newDescription?.substring(0, 100) + '...');
         const descUpdateData = {
           product: {
             body_html: suggestion.data.newDescription
           }
         };
+        // Also update tags if provided
+        if (suggestion.data.newTags && Array.isArray(suggestion.data.newTags)) {
+          descUpdateData.product.tags = suggestion.data.newTags.join(', ');
+          console.log(`[Accept] Also updating tags:`, suggestion.data.newTags);
+        }
         result = await shopifyRequest(`products/${suggestion.data.productId}.json`, 'PUT', descUpdateData);
+        console.log(`[Accept] Shopify update result:`, result?.product?.id ? 'Success' : 'Failed');
         suggestion.appliedData = result.product;
         break;
 
       case 'replace-product':
+        console.log(`[Accept] Replacing product ${suggestion.data.productIdToReplace}`);
         // Create new shoe product
         const newProduct = await shopifyRequest('products.json', 'POST', {
           product: {
@@ -1000,8 +1029,15 @@ app.post('/api/suggestions/:id/reject', async (req, res) => {
     
     let suggestion;
     try {
+      // Try finding by ObjectId first
       suggestion = await suggestionsCollection.findOne({ _id: new ObjectId(id) });
     } catch (e) {
+      // ObjectId parse failed - try finding by string _id (e.g., "demo1")
+      suggestion = await suggestionsCollection.findOne({ _id: id });
+    }
+    
+    // If still not found, also check legacy 'id' field
+    if (!suggestion) {
       suggestion = await suggestionsCollection.findOne({ id: id });
     }
 
@@ -1055,8 +1091,15 @@ app.delete('/api/suggestions/:id', async (req, res) => {
     
     let result;
     try {
+      // Try deleting by ObjectId first
       result = await suggestionsCollection.deleteOne({ _id: new ObjectId(id) });
     } catch (e) {
+      // ObjectId parse failed - try deleting by string _id (e.g., "demo1")
+      result = await suggestionsCollection.deleteOne({ _id: id });
+    }
+    
+    // If nothing deleted, also try legacy 'id' field
+    if (result.deletedCount === 0) {
       result = await suggestionsCollection.deleteOne({ id: id });
     }
 
