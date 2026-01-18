@@ -1,0 +1,37 @@
+{
+  "_id": "ObjectId",
+  "type": "replace-product",
+  "data": {
+    "productIdToReplace": 8234567890123,
+    "productTitle": "Old Basic Sneakers",
+    "newProduct": {
+      "title": "Chunky Platform Sneakers",
+      "description": "<p>Trending chunky sneakers inspired by Y2K revival - seen across TikTok fashion content</p>",
+      "vendor": "TrendWave",
+      "product_type": "Shoes",
+      "tags": ["trending", "y2k", "platform", "gen-z"],
+      "images": ["https://example.com/chunky-sneaker.jpg"]
+    },
+    "reason": "TikTok trend analysis shows 340% increase in 'chunky sneaker' searches",
+    "trendSource": "tiktok",
+    "confidenceScore": 0.87
+  },
+  "status": "pending",
+  "createdAt": "2026-01-18T10:30:00.000Z"
+},
+{
+  "_id": "ObjectId",
+  "type": "price-change",
+  "data": {
+    "productId": 8234567890123,
+    "variantId": 44567890123456,
+    "productTitle": "Vintage Band Tee",
+    "currentPrice": 29.99,
+    "newPrice": 39.99,
+    "reason": "Competitor analysis shows similar vintage tees priced 25-45% higher. Trend data indicates high demand tolerance.",
+    "trendSource": "market-analysis",
+    "confidenceScore": 0.72
+  },
+  "status": "pending",
+  "createdAt": "2026-01-18T10:30:00.000Z"
+}
