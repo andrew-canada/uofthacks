@@ -2,8 +2,9 @@
 import os
 import json
 import requests
-from config import PERPLEXITY_KEY
+from config import PERPLEXITY_KEY, MONGODB_CONNECTION_STRING
 from datetime import datetime, timedelta
+from pymongo import MongoClient
 
 # Configuration
 
@@ -21,12 +22,68 @@ def get_date_context() -> dict:
         "two_weeks_ago": two_weeks_ago.strftime("%B %d, %Y")
     }
 
-def fetch_genz_trends(count =20):
+def get_previously_analyzed_trends() -> list:
+    """
+    Fetch previously analyzed trend names from MongoDB to exclude them
+    Returns: List of trend names to exclude
+    """
+    try:
+        client = MongoClient(MONGODB_CONNECTION_STRING)
+        db = client['thewinningteam']
+        collection = db['trends']
+
+        # Get all trend names from the last 30 days
+        thirty_days_ago = datetime.now() - timedelta(days=30)
+        previous_trends = collection.find(
+            {"created_at": {"$gte": thirty_days_ago}},
+            {"name": 1, "_id": 0}
+        )
+
+        trend_names = [trend["name"] for trend in previous_trends]
+        client.close()
+
+        print(f"📋 Found {len(trend_names)} previously analyzed trends to exclude")
+        return trend_names
+
+    except Exception as e:
+        print(f"⚠️  Could not fetch previous trends from MongoDB: {e}")
+        print("   Continuing with default exclusion list...")
+        return []
+
+def fetch_genz_trends(count=20):
     """
     Fetch Gen Z trends using Perplexity API
-    Returns: JSON object with 20 marketable trends
+    Automatically excludes previously analyzed trends from MongoDB
+    Returns: JSON object with marketable trends
     """
     dates = get_date_context()
+
+    # Get previously analyzed trends from MongoDB
+    excluded_trends = get_previously_analyzed_trends()
+
+    # Add static exclusion list (fallback)
+    static_exclusions = [
+        "Turning Chinese / Becoming Chinese",
+        "365 Buttons",
+        "AI Baby Dancing",
+        "ICM Triplets Dance",
+        "#2016 Nostalgia",
+        "January 2026 Mashup Dance",
+        "TikTok Dance Mashup Compilations",
+        "Party Music Viral Dance Trends",
+        "Viral Song Mashup Trends",
+        "Unfiltered BTS & Real Process Content",
+        "Challenge Dance Compilations"
+    ]
+
+    # Combine and deduplicate
+    all_exclusions = list(set(excluded_trends + static_exclusions))
+
+    # Build exclusion text
+    if all_exclusions:
+        exclusion_text = "These trends should be DIFFERENT from:\n" + "\n".join([f" - {trend}" for trend in all_exclusions])
+    else:
+        exclusion_text = "Find fresh, unique trends that haven't been covered before."
 
     # Construct the prompt with date context
     prompt = f"""Today is {dates['today']}. Find me {count} marketable popular teen/Gen Z trends which have surfaced between {dates['two_weeks_ago']} and {dates['today']} (maximum 2 weeks old).
@@ -40,18 +97,7 @@ For each trend, provide:
 - emergence_date (when it started)
 - marketability (High/Medium/Low with brief reason)
 
-These trends should be DIFFERENT from:
- - Turning Chinese / Becoming Chinese
- - 365 Buttons
- - AI Baby Dancing
- - ICM Triplets Dance
- - #2016 Nostalgia
- - January 2026 Mashup Dance
- - TikTok Dance Mashup Compilations
- - Party Music Viral Dance Trends
- - Viral Song Mashup Trends
- - Unfiltered BTS & Real Process Content
- - Challenge Dance Compilations
+{exclusion_text}
 
 Return ONLY a valid JSON object in this exact format:
 {{
@@ -68,7 +114,7 @@ Return ONLY a valid JSON object in this exact format:
   ]
 }}
 
-Focus on trends from the last 2 weeks only. Include viral TikTok trends, fashion, music, social media formats, memes, and cultural movements."""
+Focus on trends from the last 2 weeks only. Include viral TikTok trends, fashion, music, social media formats, memes, and cultural movements. Prioritize FRESH trends that haven't been widely covered yet."""
 
     # API request headers
     headers = {
@@ -82,14 +128,14 @@ Focus on trends from the last 2 weeks only. Include viral TikTok trends, fashion
         "messages": [
             {
                 "role": "system",
-                "content": "You are a Gen Z trend analyst specializing in identifying viral, marketable trends. Always return valid JSON format. Focus on the most recent trends only."
+                "content": "You are a Gen Z trend analyst specializing in identifying viral, marketable trends. Always return valid JSON format. Focus on the most recent trends only and avoid repeating previously covered trends."
             },
             {
                 "role": "user",
                 "content": prompt
             }
         ],
-        "temperature": 0.2,  # Lower temperature for more factual responses
+        "temperature": 0.3,  # Slightly higher for more variety
         "top_p": 0.9,
         "return_citations": True,  # Get source citations
         "search_recency_filter": "week",  # Focus on recent content
@@ -127,6 +173,7 @@ Focus on trends from the last 2 weeks only. Include viral TikTok trends, fashion
                     "query_date": dates["today"],
                     "date_range": f"{dates['two_weeks_ago']} to {dates['today']}",
                     "source": "Perplexity Sonar API",
+                    "excluded_count": len(all_exclusions),
                     "citations": citations[:10] if citations else []  # Top 10 citations
                 },
                 "trends": trends_data.get("trends", [])
@@ -170,6 +217,7 @@ def main():
     print(f"\n✓ Successfully fetched {len(trends_data.get('trends', []))} trends")
     print(f"Query Date: {trends_data['metadata']['query_date']}")
     print(f"Date Range: {trends_data['metadata']['date_range']}")
+    print(f"Excluded: {trends_data['metadata'].get('excluded_count', 0)} previous trends")
     print("\n" + "=" * 60)
 
     # Print first 3 trends as preview
