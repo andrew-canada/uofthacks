@@ -128,11 +128,76 @@ Return ONLY the JSON, no markdown formatting or explanatory text.
 
     print("Sending request to Gemini...")
 
+    # Define JSON schema for structured output
+    schema = {
+        "type": "object",
+        "properties": {
+            "trends": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "string"},
+                        "name": {"type": "string"},
+                        "description": {"type": "string"},
+                        "keywords": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "minItems": 8,
+                            "maxItems": 12
+                        },
+                        "color_palette": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "minItems": 4,
+                            "maxItems": 6
+                        },
+                        "target_products": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                        },
+                        "marketing_angle": {"type": "string"},
+                        "popularity_score": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        },
+                        "platforms": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                        },
+                        "demographics": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                        },
+                        "hashtags": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "minItems": 10,
+                            "maxItems": 15
+                        }
+                    },
+                    "required": ["id", "name", "description", "keywords", "color_palette",
+                                "target_products", "marketing_angle", "popularity_score",
+                                "platforms", "demographics", "hashtags"]
+                }
+            },
+            "last_updated": {"type": "string"},
+            "source": {"type": "string"},
+            "version": {"type": "string"}
+        },
+        "required": ["trends", "last_updated", "source", "version"]
+    }
+
     try:
-        # Call Gemini
+        # Call Gemini with JSON schema for guaranteed structured output
         response = client.models.generate_content(
             model=model_name,
-            contents=prompt
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json",
+                "response_schema": schema
+            }
         )
 
         # Parse response
