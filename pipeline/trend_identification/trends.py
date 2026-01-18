@@ -51,6 +51,7 @@ These trends should be DIFFERENT from:
  - Party Music Viral Dance Trends
  - Viral Song Mashup Trends
  - Unfiltered BTS & Real Process Content
+ - Challenge Dance Compilations
 
 Return ONLY a valid JSON object in this exact format:
 {{
