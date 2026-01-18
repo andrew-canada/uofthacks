@@ -341,20 +341,34 @@
 
       btnAccept.disabled = true;
       btnReject.disabled = true;
-      showStatus('Replacing product...', 'info');
+      showStatus('Creating shoe product and replacing in all collections...', 'info');
 
       try {
-        // In a real implementation, you would:
-        // 1. Find a shoe product from your inventory
-        // 2. Call the /api/replace-product endpoint
-        // 3. Update the actual Shopify collection
+        const response = await fetch(`${API_BASE}/api/create-and-replace`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productIdToReplace: currentSuggestion.product.id
+          })
+        });
 
-        // For demo purposes, we're just showing success
-        showStatus('✅ Product replaced successfully!', 'success');
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to replace product');
+        }
+
+        console.log('Replacement successful:', data);
+        showStatus(`✅ Product replaced successfully! Updated ${data.data.collectionsUpdated} collections.`, 'success');
+
+        // Reload products to reflect changes
+        await loadProducts();
 
         setTimeout(() => {
           resetSuggestion();
-        }, 2000);
+        }, 3000);
 
       } catch (error) {
         console.error('Error accepting suggestion:', error);

@@ -157,12 +157,102 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+// Endpoint to create a shoe placeholder product and replace a clothing item
+app.post('/api/create-and-replace', async (req, res) => {
+  try {
+    const { productIdToReplace } = req.body;
+
+    if (!productIdToReplace) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required field: productIdToReplace'
+      });
+    }
+
+    console.log(`Creating shoe placeholder and replacing product ${productIdToReplace}`);
+
+    // Step 1: Create a new shoe placeholder product
+    const newProduct = await shopifyRequest('products.json', 'POST', {
+      product: {
+        title: 'Classic Leather Shoes',
+        body_html: '<p>Premium quality leather shoes - placeholder product</p>',
+        vendor: 'Trending Shoes',
+        product_type: 'Shoes',
+        tags: ['shoes', 'placeholder', 'trending'],
+        status: 'active'
+      }
+    });
+
+    const newProductId = newProduct.product.id;
+    console.log(`Created new shoe product with ID: ${newProductId}`);
+
+    // Step 2: Get all collects (product-collection associations) for the old product
+    const collectsData = await shopifyRequest(`collects.json?product_id=${productIdToReplace}&limit=250`, 'GET');
+    const collectionIds = collectsData.collects.map(collect => collect.collection_id);
+
+    console.log(`Found product in ${collectionIds.length} collections`);
+
+    // Step 3: Remove old product from all collections
+    for (const collect of collectsData.collects) {
+      try {
+        await shopifyRequest(`collects/${collect.id}.json`, 'DELETE');
+        console.log(`Removed old product from collection ${collect.collection_id}`);
+      } catch (error) {
+        console.log(`Error removing from collection ${collect.collection_id}:`, error.message);
+      }
+    }
+
+    // Step 4: Add new shoe product to all those collections
+    for (const collectionId of collectionIds) {
+      try {
+        await shopifyRequest('collects.json', 'POST', {
+          collect: {
+            product_id: newProductId,
+            collection_id: collectionId
+          }
+        });
+        console.log(`Added new shoe product to collection ${collectionId}`);
+      } catch (error) {
+        console.log(`Error adding to collection ${collectionId}:`, error.message);
+      }
+    }
+
+    // Step 5: Delete the old product entirely (optional - comment out if you want to keep it)
+    try {
+      await shopifyRequest(`products/${productIdToReplace}.json`, 'DELETE');
+      console.log(`Deleted old product ${productIdToReplace}`);
+    } catch (error) {
+      console.log(`Error deleting old product:`, error.message);
+    }
+
+    res.json({
+      success: true,
+      message: 'Product replaced successfully',
+      data: {
+        oldProductId: productIdToReplace,
+        newProductId: newProductId,
+        collectionsUpdated: collectionIds.length,
+        newProduct: newProduct.product
+      }
+    });
+
+  } catch (error) {
+    console.error('Error creating and replacing product:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      details: error
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`\n🚀 Product Suggestions API running on port ${PORT}`);
   console.log(`📍 Shop: ${process.env.SHOPIFY_SHOP_DOMAIN}`);
   console.log(`\nEndpoints:`);
   console.log(`  GET  /health - Health check`);
   console.log(`  POST /api/replace-product - Replace product in collection`);
+  console.log(`  POST /api/create-and-replace - Create shoe and replace product in all collections`);
   console.log(`  GET  /api/collections - Get all collections`);
   console.log(`  GET  /api/products - Get all products`);
 });
