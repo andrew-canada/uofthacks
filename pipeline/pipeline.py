@@ -14,7 +14,7 @@ from gemini_integration import generate_store_recommendations
 from store_recommendations import store_gemini_recommendations
 
 ANALYZED_VIDEOS_COUNT_AT_A_TIME = 1
-TRENDS_IDENTIFIED_COUNT_AT_A_TIME = 10
+TRENDS_IDENTIFIED_COUNT_AT_A_TIME = 7
 
 
 def main():
