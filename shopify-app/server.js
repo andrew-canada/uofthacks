@@ -58,17 +58,23 @@ async function connectToMongoDB() {
 
 // Middleware - CORS configured for iframe embedding (Shopify App Bridge)
 app.use(cors({
-  origin: true, // Allow all origins (or specify: ['https://admin.shopify.com', 'https://*.myshopify.com'])
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    // Allow all origins for maximum compatibility
+    callback(null, true);
+  },
   credentials: true, // Allow cookies/auth headers
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
 // Remove X-Frame-Options to allow iframe embedding
 app.use((req, res, next) => {
   res.removeHeader('X-Frame-Options');
-  // Allow embedding in Shopify admin
-  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://admin.shopify.com https://*.myshopify.com;");
+  // Allow embedding from anywhere
+  res.setHeader('Content-Security-Policy', "frame-ancestors *;");
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
 
