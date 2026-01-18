@@ -2,6 +2,7 @@ services:
   - type: web
     name: shopify-product-suggestions-api
     env: node
+    rootDirectory: frontend/shopify-app
     buildCommand: npm install
     startCommand: npm start
     envVars:
