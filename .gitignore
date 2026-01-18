@@ -233,4 +233,15 @@ snippets/
 # OS files
 .DS_Store
 
+# Node modules
 **/node_modules/
+
+# Pipeline specific
+pipeline/twelve_labs_analysis.json
+pipeline/gemini_recommendations.json
+pipeline/*.log
+pipeline/temp_*.mp4
+
+# Generated markdown docs (optional - comment out if you want to track these)
+# pipeline/PIPELINE_TEST_RESULTS.md
+# pipeline/PIPELINE_COMPLETE.md

@@ -1,0 +1,98 @@
+{
+  "shop_name": "Demo Store",
+  "export_version": "1.1",
+  "currency": "USD",
+  "products": [
+    {
+      "id": "prod_classic_boots",
+      "handle": "classic-boots",
+      "title": "Classic Boots",
+      "category": "Footwear",
+      "price": 55.0,
+      "status": "in_stock",
+      "inventory": null,
+      "image_url": null,
+      "image_alt": "Black ankle boots with a sturdy sole",
+      "tags": ["boots", "classic", "everyday", "durable"],
+      "description": "Classic boots are timeless footwear designed for both style and durability. They typically feature a sturdy sole, enclosed heel, and ankle-high or taller shaft, providing support and protection. Made from materials like leather or suede, classic boots often have clean lines and minimal detailing, which gives them a versatile, refined look."
+    },
+    {
+      "id": "prod_classic_crewneck",
+      "handle": "classic-crewneck",
+      "title": "Classic Crewneck",
+      "category": "Tops",
+      "price": 31.5,
+      "status": "in_stock",
+      "inventory": null,
+      "image_url": null,
+      "image_alt": "Plain white crewneck t-shirt on a hanger",
+      "tags": ["crewneck", "t-shirt", "basic", "cotton"],
+      "description": "A classic crewneck is a timeless top defined by its round, collarless neckline that sits close to the base of the neck. It's commonly made from cotton, fleece, or knit fabric, offering comfort and versatility."
+    },
+    {
+      "id": "prod_jacket",
+      "handle": "jacket",
+      "title": "Jacket",
+      "category": "Outerwear",
+      "price": 0.0,
+      "status": "sold_out",
+      "inventory": 0,
+      "image_url": null,
+      "image_alt": "Dark puffer jacket with a hood",
+      "tags": ["jacket", "outerwear", "warm", "everyday"],
+      "description": "A jacket is an outerwear piece designed to provide warmth and protection from the elements. It adds structure to an outfit while balancing function and style, making it suitable for everyday wear across changing weather conditions."
+    },
+    {
+      "id": "prod_jeans",
+      "handle": "jeans",
+      "title": "Jeans",
+      "category": "Bottoms",
+      "price": 40.0,
+      "status": "in_stock",
+      "inventory": null,
+      "image_url": null,
+      "image_alt": "Light-wash denim jeans",
+      "tags": ["jeans", "denim", "everyday", "classic"],
+      "description": "Jeans are a type of casual pants typically made from denim, a durable cotton fabric. They are known for their sturdy construction, usually featuring riveted pockets, a zipper or button fly, and belt loops. Originally designed as workwear because of their strength, jeans have become a universal fashion staple worn by people of all ages."
+    },
+    {
+      "id": "prod_shorts",
+      "handle": "shorts",
+      "title": "Shorts",
+      "category": "Bottoms",
+      "price": 15.0,
+      "status": "in_stock",
+      "inventory": null,
+      "image_url": null,
+      "image_alt": "Black athletic-style shorts with drawstrings",
+      "tags": ["shorts", "warm-weather", "casual", "sporty"],
+      "description": "Shorts are a lightweight, comfortable bottom designed for warm weather. Typically cut above the knee, they offer ease of movement and breathability while remaining versatile enough for casual, sporty, or relaxed everyday wear."
+    },
+    {
+      "id": "prod_sweater",
+      "handle": "sweater",
+      "title": "Sweater",
+      "category": "Tops",
+      "price": 32.0,
+      "status": "sold_out",
+      "inventory": 0,
+      "image_url": null,
+      "image_alt": "Light grey knit sweater",
+      "tags": ["sweater", "knit", "layering", "cozy"],
+      "description": "A sweater is a versatile knit top designed to provide warmth and comfort. Made from materials like wool, cotton, or cashmere, it's perfect for layering or wearing on its own. Sweaters balance practicality and style, making them suitable for both casual and polished looks across seasons."
+    },
+    {
+      "id": "prod_trench_coat",
+      "handle": "trench-coat",
+      "title": "Trench Coat",
+      "category": "Outerwear",
+      "price": 250.0,
+      "status": "in_stock",
+      "inventory": null,
+      "image_url": null,
+      "image_alt": "Brown trench-style coat",
+      "tags": ["trench-coat", "outerwear", "classic", "water-resistant"],
+      "description": "A trench coat is a long, lightweight coat traditionally made from water-resistant fabric, designed to protect against rain and wind. It typically features a double-breasted front, wide lapels, shoulder epaulettes, a belted waist, and often storm flaps for added protection."
+    }
+  ]
+}
