@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Suggestions</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      border-radius: 20px;
+      padding: 30px 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .stat-box {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .suggestions-section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-left: 8px;
+    }
+
+    .suggestions-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .suggestion-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .suggestion-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+
+    .suggestion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .suggestion-type {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .type-replace-product {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .type-price-change {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .type-description-change {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+    }
+
+    .type-new-product {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      color: white;
+    }
+
+    .suggestion-icon {
+      font-size: 24px;
+    }
+
+    .suggestion-content {
+      margin-bottom: 16px;
+    }
+
+    .suggestion-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #212529;
+      margin-bottom: 8px;
+    }
+
+    .suggestion-description {
+      color: #495057;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .suggestion-details {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #6c757d;
+      font-size: 13px;
+    }
+
+    .detail-value {
+      color: #212529;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .price-comparison {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .old-price {
+      text-decoration: line-through;
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .new-price {
+      color: #22c55e;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .savings {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .timestamp {
+      text-align: right;
+      font-size: 11px;
+      color: #6c757d;
+      margin-top: 12px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: white;
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.7;
+    }
+
+    .empty-state h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: white;
+      font-size: 18px;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .new-badge {
+      background: #ef4444;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Product Suggestions</h1>
+      <p class="subtitle">Real-time AI-powered recommendations for your store</p>
+      <div class="stats">
+        <div class="stat-box">
+          <div class="stat-number" id="total-count">0</div>
+          <div class="stat-label">Total Suggestions</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="pending-count">0</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="accepted-count">0</div>
+          <div class="stat-label">Accepted</div>
+        </div>
+      </div>
+    </header>
+
+    <div id="pending-section" class="suggestions-section" style="display: none;">
+      <h2 class="section-title">🔔 Pending Suggestions</h2>
+      <div id="pending-container" class="suggestions-grid"></div>
+    </div>
+
+    <div id="accepted-section" class="suggestions-section" style="display: none;">
+      <h2 class="section-title">✅ Recently Accepted</h2>
+      <div id="accepted-container" class="suggestions-grid"></div>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      Loading suggestions...
+    </div>
+
+    <div id="empty-state" class="empty-state" style="display: none;">
+      <div class="empty-icon">💡</div>
+      <h2>No Suggestions Yet</h2>
+      <p>New product suggestions will appear here when they're generated</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    let lastUpdateTime = 0;
+    let suggestions = [];
+
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins} min ago`;
+
+      const diffHours = Math.floor(diffMins / 60);
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+    }
+
+    // Calculate savings percentage
+    function calculateSavings(oldPrice, newPrice) {
+      const savings = ((oldPrice - newPrice) / oldPrice * 100).toFixed(0);
+      return savings;
+    }
+
+    // Get icon for suggestion type
+    function getIcon(type) {
+      switch(type) {
+        case 'replace-product': return '🔄';
+        case 'price-change': return '💰';
+        case 'description-change': return '✏️';
+        case 'new-product': return '🆕';
+        default: return '💡';
+      }
+    }
+
+    // Render suggestion card
+    function renderSuggestion(suggestion) {
+      const typeClass = `type-${suggestion.type}`;
+      const icon = getIcon(suggestion.type);
+      const isNew = (Date.now() - new Date(suggestion.createdAt).getTime()) < 60000; // Less than 1 min
+
+      let content = '';
+
+      switch (suggestion.type) {
+        case 'replace-product':
+          content = `
+            <div class="suggestion-content">
+              <div class="suggestion-title">${icon} Replace with Trending Product</div>
+              <div class="suggestion-description">
+                Swap "${suggestion.data.productTitle}" with "${suggestion.data.newProduct.title}" to follow current trends.
+              </div>
+            </div>
+            <div class="suggestion-details">
+              <div class="detail-row">
+                <span class="detail-label">Current Product</span>
+                <span class="detail-value">${suggestion.data.productTitle}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Suggested Product</span>
+                <span class="detail-value">${suggestion.data.newProduct.title}</span>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'price-change':
+          const savings = calculateSavings(suggestion.data.currentPrice, suggestion.data.newPrice);
+          content = `
+            <div class="suggestion-content">
+              <div class="suggestion-title">${icon} Price Optimization</div>
+              <div class="suggestion-description">
+                ${suggestion.data.reason}
+              </div>
+            </div>
+            <div class="suggestion-details">
+              <div class="detail-row">
+                <span class="detail-label">Product</span>
+                <span class="detail-value">${suggestion.data.productTitle}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Price Update</span>
+                <span class="detail-value">
+                  <span class="price-comparison">
+                    <span class="old-price">$${suggestion.data.currentPrice}</span>
+                    →
+                    <span class="new-price">$${suggestion.data.newPrice}</span>
+                    <span class="savings">Save ${savings}%</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'description-change':
+          content = `
+            <div class="suggestion-content">
+              <div class="suggestion-title">${icon} Description Enhancement</div>
+              <div class="suggestion-description">
+                Update product description with AI-optimized content to improve SEO and conversions.
+              </div>
+            </div>
+            <div class="suggestion-details">
+              <div class="detail-row">
+                <span class="detail-label">Product</span>
+                <span class="detail-value">${suggestion.data.productTitle || 'Product'}</span>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'new-product':
+          content = `
+            <div class="suggestion-content">
+              <div class="suggestion-title">${icon} New Product Opportunity</div>
+              <div class="suggestion-description">
+                Add "${suggestion.data.product.title}" to capitalize on emerging trends.
+              </div>
+            </div>
+            <div class="suggestion-details">
+              <div class="detail-row">
+                <span class="detail-label">Product Name</span>
+                <span class="detail-value">${suggestion.data.product.title}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Vendor</span>
+                <span class="detail-value">${suggestion.data.product.vendor}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Category</span>
+                <span class="detail-value">${suggestion.data.product.product_type}</span>
+              </div>
+            </div>
+          `;
+          break;
+      }
+
+      return `
+        <div class="suggestion-card">
+          <div class="suggestion-header">
+            <span class="suggestion-type ${typeClass}">${suggestion.type.replace('-', ' ')}</span>
+            ${isNew ? '<span class="new-badge">New</span>' : ''}
+          </div>
+          ${content}
+          <div class="timestamp">Created ${formatDate(suggestion.createdAt)}</div>
+        </div>
+      `;
+    }
+
+    // Update statistics
+    function updateStats() {
+      document.getElementById('total-count').textContent = suggestions.length;
+      document.getElementById('pending-count').textContent = suggestions.filter(s => s.status === 'pending').length;
+      document.getElementById('accepted-count').textContent = suggestions.filter(s => s.status === 'accepted').length;
+    }
+
+    // Render suggestions
+    function renderSuggestions() {
+      const loading = document.getElementById('loading');
+      const emptyState = document.getElementById('empty-state');
+      const pendingSection = document.getElementById('pending-section');
+      const acceptedSection = document.getElementById('accepted-section');
+      const pendingContainer = document.getElementById('pending-container');
+      const acceptedContainer = document.getElementById('accepted-container');
+
+      loading.style.display = 'none';
+
+      if (suggestions.length === 0) {
+        emptyState.style.display = 'block';
+        pendingSection.style.display = 'none';
+        acceptedSection.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      const pending = suggestions
+        .filter(s => s.status === 'pending')
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      const accepted = suggestions
+        .filter(s => s.status === 'accepted')
+        .sort((a, b) => new Date(b.acceptedAt) - new Date(a.acceptedAt))
+        .slice(0, 5); // Show only last 5 accepted
+
+      if (pending.length > 0) {
+        pendingSection.style.display = 'block';
+        pendingContainer.innerHTML = pending.map(s => renderSuggestion(s)).join('');
+      } else {
+        pendingSection.style.display = 'none';
+      }
+
+      if (accepted.length > 0) {
+        acceptedSection.style.display = 'block';
+        acceptedContainer.innerHTML = accepted.map(s => renderSuggestion(s)).join('');
+      } else {
+        acceptedSection.style.display = 'none';
+      }
+
+      updateStats();
+    }
+
+    // Load suggestions
+    async function loadSuggestions() {
+      try {
+        const response = await fetch(`${API_BASE}/api/suggestions`);
+        const data = await response.json();
+
+        if (data.success) {
+          suggestions = data.suggestions;
+          renderSuggestions();
+        }
+      } catch (error) {
+        console.error('Error loading suggestions:', error);
+      }
+    }
+
+    // Auto-refresh every 3 seconds
+    setInterval(loadSuggestions, 3000);
+
+    // Initial load
+    loadSuggestions();
+  </script>
+</body>
+</html>
