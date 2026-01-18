@@ -10,11 +10,11 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from services import (
-    product_service, 
-    trends_service, 
-    ai_optimizer,
-    trend_matcher,
-    marketing_generator
+    product_service,
+    trends_service,
+    get_ai_optimizer,
+    get_trend_matcher,
+    get_marketing_generator,
 )
 
 products_bp = Blueprint('products', __name__)
@@ -126,8 +126,8 @@ def analyze_all_products():
         ]
         
         # Run AI analysis
-        analysis_results = ai_optimizer.analyze_products_with_trends(
-            product_summaries, 
+        analysis_results = get_ai_optimizer().analyze_products_with_trends(
+            product_summaries,
             trend_summaries
         )
         
@@ -173,7 +173,7 @@ def analyze_single_product(product_id):
         trend_summaries = [trends_service.get_trend_summary(t) for t in trends]
         
         # Run AI analysis on just this product
-        analysis_results = ai_optimizer.analyze_products_with_trends(
+        analysis_results = get_ai_optimizer().analyze_products_with_trends(
             [product_summary],
             trend_summaries
         )
@@ -228,12 +228,12 @@ def apply_recommendations(product_id):
             trends = trends_service.get_current_trends()
             trend_summaries = [trends_service.get_trend_summary(t) for t in trends]
             
-            analysis_results = ai_optimizer.analyze_products_with_trends(
+            analysis_results = get_ai_optimizer().analyze_products_with_trends(
                 [product_summary],
                 trend_summaries
             )
-            
-            recommendations = ai_optimizer.get_product_recommendations(
+
+            recommendations = get_ai_optimizer().get_product_recommendations(
                 product_id,
                 analysis_results
             )
@@ -367,7 +367,7 @@ def match_products_to_trends():
         ]
         
         # Run trend matching (Step 1 only)
-        match_results = trend_matcher.find_matches(product_summaries, trend_summaries)
+        match_results = get_trend_matcher().find_matches(product_summaries, trend_summaries)
         
         return jsonify({
             'success': True,
@@ -437,8 +437,8 @@ def generate_marketing_for_product(product_id):
         trend_summary = trends_service.get_trend_summary(trend)
         
         # Generate marketing (Step 2)
-        result = marketing_generator.generate_marketing(
-            product_summary, 
+        result = get_marketing_generator().generate_marketing(
+            product_summary,
             trend_summary,
             match_info=data.get('match_info')
         )
@@ -508,7 +508,7 @@ def match_and_generate():
         trends_lookup = {t['id']: t for t in trend_summaries}
         
         # Step 3: Find matches
-        match_results = trend_matcher.find_matches(product_summaries, trend_summaries)
+        match_results = get_trend_matcher().find_matches(product_summaries, trend_summaries)
         
         if not match_results.get('success'):
             return jsonify(match_results), 500
@@ -535,8 +535,8 @@ def match_and_generate():
                 if not trend:
                     continue
                 
-                gen_result = marketing_generator.generate_marketing(
-                    product, 
+                gen_result = get_marketing_generator().generate_marketing(
+                    product,
                     trend,
                     match_info=trend_info
                 )

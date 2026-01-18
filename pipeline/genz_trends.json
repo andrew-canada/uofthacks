@@ -1,0 +1,196 @@
+{
+  "metadata": {
+    "query_date": "January 17, 2026",
+    "date_range": "January 03, 2026 to January 17, 2026",
+    "source": "Perplexity Sonar API",
+    "citations": [
+      "https://www.independent.co.uk/life-style/2016-trend-instagram-viral-explained-b2901655.html",
+      "https://www.youtube.com/watch?v=uxmPAXdIpCw",
+      "https://abcnews.go.com/GMA/Living/2026-2016-social-media-users-turn-back-clock/story?id=129277952",
+      "https://ads.tiktok.com/business/en-CA/next",
+      "https://md-eksperiment.org/en/post/20260116-mastering-viral-tiktok-trends-in-2026-full-breakdown-participation-hacks-and-creation-strategies"
+    ]
+  },
+  "trends": [
+    {
+      "trend_id": 1,
+      "name": "2026 is the New 2016",
+      "description": "Users post lo-fi filtered throwbacks to 2016, like Snapchat puppy filters, Pokémon Go pics, and Vine-era vibes, captioned to evoke nostalgia for a 'simpler' time. Celebrities like Selena Gomez, Charlie Puth, John Legend, and Reese Witherspoon join with personal 10-year-old photos and videos. It marks the 10-year anniversary amid post-holiday longing for optimism pre-pandemic.",
+      "platform": "TikTok, Instagram",
+      "viral_metric": "452% surge in '2016' searches on TikTok first week; 56M videos with hazy filter; #2016 in 1M+ TikTok posts, 37M+ Instagram posts[1][3]",
+      "emergence_date": "January 1, 2026",
+      "marketability": "High - Nostalgia drives fashion recreations, filter apps, and retro merch tie-ins"
+    },
+    {
+      "trend_id": 2,
+      "name": "Lock-In Mindset",
+      "description": "Teens share public commitments to study habits, fitness goals, and routines with tribe accountability for motivation. Content features shared hacks, humor, and normalization of post-holiday grind pressure. It shifts from escapism to grounded presence and emotional validation.",
+      "platform": "TikTok",
+      "viral_metric": "#lockedin - 648k posts[4]",
+      "emergence_date": "January 3, 2026",
+      "marketability": "High - Perfect for productivity apps, gym wear, planners targeting Gen Z self-improvement"
+    },
+    {
+      "trend_id": 3,
+      "name": "Hygiene Rituals",
+      "description": "Creators elevate basic hygiene into luxurious self-care moments, turning routines into intentional self-elevation content. Focuses on everyday maintenance as a vibe shift from basic to premium. Resonates with realism over polished perfection.",
+      "platform": "TikTok",
+      "viral_metric": "#hygiene - 692k posts[4]",
+      "emergence_date": "January 5, 2026",
+      "marketability": "High - Ideal for skincare, bath products, and wellness brand collabs"
+    },
+    {
+      "trend_id": 4,
+      "name": "Job Life Real Talk",
+      "description": "Highlights realities of office returns and non-traditional careers, evolving from #worklife discussions. Creators redefine modern work with honest BTS moments over curated feeds. Ties into craving unfiltered stories.",
+      "platform": "TikTok",
+      "viral_metric": "#joblife - 235k posts; #worklife - 5.2M posts[4]",
+      "emergence_date": "January 4, 2026",
+      "marketability": "Medium - Appeals to career apps, remote work tools, but niche for teens"
+    },
+    {
+      "trend_id": 5,
+      "name": "Comment React Stack",
+      "description": "Users stack photo reactions in TikTok comments, reviving memes and creating a visual language in comment sections. Turns comments into playful community spaces like clubhouses. Brands like Oreo riff on it for engagement.",
+      "platform": "TikTok",
+      "viral_metric": "Oreo +12% share increase via comment culture[4]",
+      "emergence_date": "January 7, 2026",
+      "marketability": "High - Brands can boost interaction; meme revival kits marketable"
+    },
+    {
+      "trend_id": 6,
+      "name": "What to Wear Crowdsource",
+      "description": "Creators ask commenters for outfit advice via search bar for any occasion, from dress codes to spotlight steals. Builds community curation of personal style. Reflects curiosity-driven discovery journeys.",
+      "platform": "TikTok",
+      "viral_metric": "#whattowear - 931.8k posts[4]",
+      "emergence_date": "January 6, 2026",
+      "marketability": "High - Fashion brands can sponsor polls, AR try-ons"
+    },
+    {
+      "trend_id": 7,
+      "name": "Cooking Hacks Expansion",
+      "description": "Starts with recipes but expands to game days, reunions, showcasing skills in social contexts. Turns kitchen tips into versatile life hacks. Fuels intentional content over endless scroll.",
+      "platform": "TikTok",
+      "viral_metric": "#cookinghacks - 782.2k posts[4]",
+      "emergence_date": "January 8, 2026",
+      "marketability": "High - Kitchen gadgets, meal kits for viral challenges"
+    },
+    {
+      "trend_id": 8,
+      "name": "My Makeup Type Search",
+      "description": "Users query TikTok search for personalized makeup types, aesthetics, books based on past content. Harnesses algorithm for self-discovery. Part of deeper curiosity detours.",
+      "platform": "TikTok",
+      "viral_metric": "#mymakeuptype - 24.7k posts[4]",
+      "emergence_date": "January 9, 2026",
+      "marketability": "High - Beauty brands for personalized quizzes, products"
+    },
+    {
+      "trend_id": 9,
+      "name": "January Dance Compilations",
+      "description": "Compilations of fast-paced dances to trending sounds like 'Hella Bad' and 'I'mma Let Her,' with moves like button holds and running back vibes. Viral challenges from TikTok, IG, YouTube. Hooks Gen Z with lit energy post-holidays.",
+      "platform": "TikTok, YouTube",
+      "viral_metric": "Multiple parts trending Jan 2026, daily new comps[2]",
+      "emergence_date": "January 10, 2026",
+      "marketability": "High - Dancewear, sound-alike tracks for brands"
+    },
+    {
+      "trend_id": 10,
+      "name": "2016 Eyebrow Throwback",
+      "description": "Subset of nostalgia: intensely carved 2016 eyebrows with puppy Snapchat filters in carousels. Users dig archives for bold beauty looks. Ties into broader 2016 recap fever.",
+      "platform": "Instagram, TikTok",
+      "viral_metric": "Part of 56M hazy filter videos[1]",
+      "emergence_date": "January 2, 2026",
+      "marketability": "Medium - Brow products, filter apps revival"
+    },
+    {
+      "trend_id": 11,
+      "name": "Pokémon Go Nostalgia Pics",
+      "description": "Grainy iPhone shots of 2016 Pokémon Go hunts shared in feeds. Laments Vine shutdown and simpler mobile gaming era. Fuels rose-tinted decade recaps.",
+      "platform": "TikTok, Instagram",
+      "viral_metric": "Overwhelms feeds first two weeks[1]",
+      "emergence_date": "January 3, 2026",
+      "marketability": "Medium - Gaming merch, AR filter tie-ins"
+    },
+    {
+      "trend_id": 12,
+      "name": "Mannequin Challenge Revival",
+      "description": "Nod to Rae Sremmurd’s 2016 hit inspiring frozen poses in throwbacks. Users recreate with modern twists in nostalgia vids. Highlights pop culture peaks.",
+      "platform": "TikTok",
+      "viral_metric": "Tied to 452% '2016' search surge[1]",
+      "emergence_date": "January 4, 2026",
+      "marketability": "Low - Niche, but challenge kits possible"
+    },
+    {
+      "trend_id": 13,
+      "name": "Bleached Hair Coachella Vibes",
+      "description": "Taylor Swift's 2016 bleached hair debuts recreated or shared from archives. Festival fashion throwbacks in carousels. Captures music fest optimism.",
+      "platform": "Instagram",
+      "viral_metric": "37M+ #2016 posts[3]",
+      "emergence_date": "January 5, 2026",
+      "marketability": "High - Hair dye, festival apparel"
+    },
+    {
+      "trend_id": 14,
+      "name": "NPC Mode Rejection",
+      "description": "Ditching tired 'non-player character' autopilot tag for main character energy. Pushes intentional living over mindless scrolling. Evolves from dated trends.",
+      "platform": "TikTok",
+      "viral_metric": "#npcmode referenced in reports[4]",
+      "emergence_date": "January 7, 2026",
+      "marketability": "Medium - Motivation journals, energy drinks"
+    },
+    {
+      "trend_id": 15,
+      "name": "Second Account Freedom",
+      "description": "Brands/creators show unfiltered sides on alt accounts, breaking molds. Aligns with Reali-Tea honesty over perfection. Builds niche communities.",
+      "platform": "TikTok",
+      "viral_metric": "Emerging in 2026 reports[4]",
+      "emergence_date": "January 8, 2026",
+      "marketability": "High - Dual-persona brand strategies"
+    },
+    {
+      "trend_id": 16,
+      "name": "Post-Holiday Introspective Edits",
+      "description": "Wave of structured, reflective content amid chaos, like routine resets. Blends nostalgia with forward focus. Kicked off January trends.",
+      "platform": "TikTok",
+      "viral_metric": "January 2026 kickoff wave[5]",
+      "emergence_date": "January 3, 2026",
+      "marketability": "Medium - Journaling apps, reset kits"
+    },
+    {
+      "trend_id": 17,
+      "name": "Hella Bad Dance Move",
+      "description": "Signature dance from comps: 'Hella bad, just ask if she could hold the button' lip-syncs with fast twists. High-energy Gen Z challenge.",
+      "platform": "TikTok",
+      "viral_metric": "Featured in Jan 16 comp[2]",
+      "emergence_date": "January 12, 2026",
+      "marketability": "High - Viral sound for ads"
+    },
+    {
+      "trend_id": 18,
+      "name": "Scuba Junior Lip-Sync",
+      "description": "'I'm the junior scuba' hooks in dance vids with confident struts. Part of lit challenge series. Quick-spread audio.",
+      "platform": "TikTok, YouTube",
+      "viral_metric": "Daily comps Part 2-4[2]",
+      "emergence_date": "January 14, 2026",
+      "marketability": "Medium - Meme audio merch"
+    },
+    {
+      "trend_id": 19,
+      "name": "Lemonade Beyoncé Throwbacks",
+      "description": "2016 Beyoncé Lemonade visuals and tour clips in nostalgia posts. Celebrates album drop amid year recaps. Iconic culture nod.",
+      "platform": "Instagram, TikTok",
+      "viral_metric": "Celeb participation surge[1]",
+      "emergence_date": "January 6, 2026",
+      "marketability": "High - Music streams, visual albums"
+    },
+    {
+      "trend_id": 20,
+      "name": "We Don’t Talk Anymore Lip-Sync",
+      "description": "Charlie Puth's 2016 hit revived with original vid recreations. Radio dominance nostalgia in low-fi edits. Hooks emotional callbacks.",
+      "platform": "TikTok",
+      "viral_metric": "56M related videos[1]",
+      "emergence_date": "January 11, 2026",
+      "marketability": "Medium - Throwback playlists"
+    }
+  ]
+}

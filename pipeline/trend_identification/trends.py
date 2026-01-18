@@ -2,10 +2,14 @@
 import os
 import json
 import requests
+from config import PERPLEXITY_KEY
 from datetime import datetime, timedelta
 
 # Configuration
-API_KEY = "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"
+
+
+API_KEY = PERPLEXITY_KEY
+
 API_URL = "https://api.perplexity.ai/chat/completions"
 
 def get_date_context() -> dict:
@@ -17,7 +21,7 @@ def get_date_context() -> dict:
         "two_weeks_ago": two_weeks_ago.strftime("%B %d, %Y")
     }
 
-def fetch_genz_trends():
+def fetch_genz_trends(count =20):
     """
     Fetch Gen Z trends using Perplexity API
     Returns: JSON object with 20 marketable trends
@@ -25,10 +29,10 @@ def fetch_genz_trends():
     dates = get_date_context()
 
     # Construct the prompt with date context
-    prompt = f"""Today is {dates['today']}. Find me 20 marketable popular teen/Gen Z trends which have surfaced between {dates['two_weeks_ago']} and {dates['today']} (maximum 2 weeks old).
+    prompt = f"""Today is {dates['today']}. Find me {count} marketable popular teen/Gen Z trends which have surfaced between {dates['two_weeks_ago']} and {dates['today']} (maximum 2 weeks old).
 
 For each trend, provide:
-- trend_id (1-20)
+- trend_id (1-{count})
 - name (concise trend name)
 - description (2-3 sentence explanation)
 - platform (where it's trending)

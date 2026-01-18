@@ -284,10 +284,10 @@ def analyze_video_content(video_id, video_metadata):
     return what_happened, reasons[:3]
 
 
-def analyze_trend(trend):
+def analyze_trend(trend, count=3):
        
     # 1. Get Videos
-    videos = get_trending_videos(max_results=3+5, trend_filter=trend) # 3 being the targeted amount
+    videos = get_trending_videos(max_results=count+5, trend_filter=trend) # 3 being the targeted amount
     if not videos: return
 
     # 2. Create Index (Auto-switching)
@@ -299,7 +299,7 @@ def analyze_trend(trend):
     # 3. Process
     counter = 0
     for vid in videos:
-        if counter == 3:break
+        if counter == count:break
         
         #could implement a buffer trend video logic to fix some of the videos failing issue (having 5 videos to process and processing until 2 of them are ok)
         print(f"\n🎥 Processing: {vid['title'][:50]}...")

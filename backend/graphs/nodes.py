@@ -10,7 +10,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from services import product_service, trends_service, ai_optimizer
+from services import product_service, trends_service, get_ai_optimizer
 from .state import GraphState
 
 
@@ -104,7 +104,7 @@ def analyze_products_node(state: GraphState) -> Dict[str, Any]:
                 'analysis_results': {'success': False}
             }
         
-        results = ai_optimizer.analyze_products_with_trends(
+        results = get_ai_optimizer().analyze_products_with_trends(
             product_summaries,
             trend_summaries
         )
