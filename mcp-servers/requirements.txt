@@ -1,0 +1,8 @@
+# MCP Server Dependencies
+# Install with: pip install -r mcp-servers/requirements.txt
+
+# Model Context Protocol SDK
+mcp>=0.1.0
+
+# Standard library dependencies should be sufficient for basic functionality
+# Additional dependencies from backend may be needed if importing backend services

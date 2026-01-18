@@ -1,0 +1,37 @@
+{%- comment -%}
+  Product Styling Theme Extension
+  
+  Applies styling to products based on metafields.
+  Reads styling from namespace: trending_ui, key: styling
+  
+  Usage in theme product card:
+  {% render 'product-styling', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign styling_metafield = product.metafields.trending_ui.styling.value
+  if styling_metafield == blank
+    assign styling_metafield = null
+  endif
+-%}
+
+{%- if styling_metafield -%}
+  {%- style -%}
+    .product-card[data-product-id="{{ product.id }}"] {
+      {%- if styling_metafield.style == 'luxury' -%}
+        border: 1px solid {{ styling_metafield.colorScheme | default: '#2C2C2C' }};
+        background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+      {%- elsif styling_metafield.style == 'hero' -%}
+        border: 2px solid {{ styling_metafield.colorScheme | default: '#FF6B6B' }};
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      {%- elsif styling_metafield.style == 'minimal' -%}
+        border: 1px solid #e0e0e0;
+        background: {{ styling_metafield.colorScheme | default: '#F5F5F5' }};
+      {%- elsif styling_metafield.style == 'urgent' -%}
+        border: 2px dashed {{ styling_metafield.colorScheme | default: '#FFB800' }};
+        background: #fffaf0;
+        animation: pulse 2s infinite;
+      {%- endif -%}
+    }
+  {%- endstyle -%}
+{%- endif -%}

@@ -1,0 +1,36 @@
+{%- comment -%}
+  Collection Order Theme Extension
+  
+  Orders products in collection based on metafield.
+  Reads order from namespace: trending_ui, key: product_order
+  
+  Usage: Include this logic in collection template to reorder products
+{%- endcomment -%}
+
+{%- liquid
+  assign order_metafield = collection.metafields.trending_ui.product_order.value
+  if order_metafield == blank
+    assign order_metafield = null
+  endif
+-%}
+
+{%- if order_metafield and order_metafield.productIds -%}
+  {%- comment -%}Products will be ordered by JavaScript or server-side based on metafield{%- endcomment -%}
+  <script>
+    (function() {
+      const productOrder = {{ order_metafield.productIds | json }};
+      const container = document.querySelector('[data-collection-id="{{ collection.id }}"]') 
+                     || document.querySelector('.collection-products') 
+                     || document.querySelector('.product-grid');
+      
+      if (container && productOrder.length > 0) {
+        const products = Array.from(container.querySelectorAll('[data-product-id]'));
+        const ordered = productOrder
+          .map(id => products.find(p => p.dataset.productId === id))
+          .filter(Boolean);
+        
+        ordered.forEach(product => container.appendChild(product));
+      }
+    })();
+  </script>
+{%- endif -%}

@@ -60,9 +60,38 @@ python extraction.py
 
 ## Running the Pipeline
 
+### Automated Run (Recommended) 🚀
+
+The easiest way to run the pipeline with automatic environment setup and logging:
+
 ```bash
 cd pipeline
-python pipeline.py
+./run_pipeline.sh
+```
+
+**Features:**
+- ✅ Automatically activates virtual environment
+- ✅ Checks and installs dependencies
+- ✅ Validates configuration files
+- ✅ Creates timestamped log files in `logs/`
+- ✅ Shows MongoDB status after completion
+- ✅ Colored output for easy debugging
+- ✅ Error handling and exit codes
+
+**Options:**
+```bash
+./run_pipeline.sh          # Normal run
+./run_pipeline.sh --clean  # Clean previous outputs first
+```
+
+### Manual Run
+
+If you prefer to run manually:
+
+```bash
+cd pipeline
+source ../venv/bin/activate
+python3 pipeline.py
 ```
 
 ## Output Files
