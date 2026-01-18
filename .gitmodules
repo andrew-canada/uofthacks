@@ -1,0 +1,3 @@
+[submodule "embedded-frontend"]
+	path = embedded-frontend
+	url = https://github.com/lukhsaankumar/UoftHacksFrontend
