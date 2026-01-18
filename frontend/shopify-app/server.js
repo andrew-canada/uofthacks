@@ -495,8 +495,13 @@ app.listen(PORT, async () => {
   console.log(`  POST   /api/suggestions/:id/reject - Reject a suggestion`);
   console.log(`  DELETE /api/suggestions/:id - Delete a suggestion`);
 
-  // Generate initial suggestions
-  await initializeSuggestions();
+  // Generate initial suggestions only if token is configured
+  if (SHOPIFY_ACCESS_TOKEN && SHOPIFY_ACCESS_TOKEN !== 'your_access_token_here') {
+    await initializeSuggestions();
+  } else {
+    console.log('⚠️  SHOPIFY_ACCESS_TOKEN not configured - skipping initial suggestions');
+    console.log('   Configure the token in Render environment variables to enable automatic suggestions');
+  }
 
   console.log(`\n🌐 Access the app at:`);
   console.log(`   Admin: http://localhost:${PORT}/admin.html`);
