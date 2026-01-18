@@ -224,6 +224,7 @@ trending_analysis_*.json
 robust_analysis.json
 pipeline/video_analysis/run-progress/
 
+*/config.py
 # Trend tracking history
 .trend_history.txt
 
