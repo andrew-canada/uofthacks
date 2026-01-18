@@ -1,3 +1,5 @@
+# run this command: python pipeline/extraction.py --store parallelapparel-uofthacksdemo.myshopify.com --out shop_export.json
+
 ("""Shopify site extractor
 
 Usage:
