@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -86,7 +88,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Shopify configuration
 const SHOPIFY_SHOP_DOMAIN = process.env.SHOPIFY_SHOP_DOMAIN;
 const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
-const SHOPIFY_API_VERSION = '2025-01';
+const SHOPIFY_API_VERSION = '2026-01';
 
 // Helper function to make Shopify API requests
 async function shopifyRequest(endpoint, method = 'GET', body = null) {
