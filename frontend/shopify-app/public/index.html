@@ -351,25 +351,29 @@
 <body>
   <div class="container">
     <header>
-      <h1>Product Suggestions</h1>
-      <p class="subtitle">AI-powered recommendations for your Shopify store</p>
+      <div class="header-content">
+        <h1>Product Suggestions</h1>
+        <p class="subtitle">AI-powered recommendations for your Shopify store</p>
+      </div>
     </header>
 
-    <div id="loading" class="loading">
-      <div class="spinner"></div>
-      Loading suggestions...
-    </div>
+    <div class="content-wrapper">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading suggestions...</div>
+      </div>
 
-    <div id="suggestions-container" class="suggestions-grid" style="display: none;"></div>
+      <div id="suggestions-container" class="suggestions-grid" style="display: none;"></div>
 
-    <div id="empty-state" class="empty-state" style="display: none;">
-      <div class="empty-icon">💡</div>
-      <h2>No Suggestions Available</h2>
-      <p>Suggestions will appear here automatically</p>
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <div class="empty-icon">💡</div>
+        <h2>No Suggestions Available</h2>
+        <p>Suggestions will appear here automatically</p>
+      </div>
     </div>
 
     <div id="toast" class="toast">
-      <span id="toast-message"></span>
+      <span id="toast-message" class="toast-message"></span>
     </div>
   </div>
 
