@@ -5,12 +5,14 @@ import json
 import random
 import re
 from pytubefix import YouTube
+from random import choice
+
 
 # ==========================================
 # CONFIGURATION
 # ==========================================
 try:
-    from config import TWELVE_LABS_API_KEY, YOUTUBE_API_KEY, TWELVE_LABS_BASE_URL
+    from config import YOUTUBE_API_KEY, TWELVE_LABS_BASE_URL,TWELVE_LABS_API_KEY, TWELVE_LABS_API_KEYS# ,TWELVE_LABS_API_KEY
 except ImportError:
     print("❌ Error: config.py not found! Please ensure your keys are set.")
     # You can set defaults here if needed for testing
@@ -199,6 +201,7 @@ def generate_text_robust(video_id, prompt):
     Tries Generate endpoint with stream=False to avoid JSON errors.
     Fallback to stream parsing if API ignores the flag.
     """
+
     headers = {"x-api-key": TWELVE_LABS_API_KEY, "Content-Type": "application/json"}
     
     # STRATEGY A: /analyze endpoint (Detailed)
@@ -255,6 +258,9 @@ def generate_text_robust(video_id, prompt):
         return "Error analyzing video: Connection failed."
 
 def analyze_video_content(video_id, video_metadata):
+    # global TWELVE_LABS_API_KEY
+    # TWELVE_LABS_API_KEY=choice(TWELVE_LABS_API_KEYS)
+
     # 1. Visual Narrative
     narrative_prompt = (
         "Write a detailed visual description of this video. "
@@ -285,7 +291,7 @@ def analyze_video_content(video_id, video_metadata):
 
 
 def analyze_trend(trend, count=3):
-       
+
     # 1. Get Videos
     videos = get_trending_videos(max_results=count+5, trend_filter=trend) # 3 being the targeted amount
     if not videos: return
