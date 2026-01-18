@@ -240,6 +240,7 @@ snippets/
 pipeline/twelve_labs_analysis.json
 pipeline/gemini_recommendations.json
 pipeline/*.log
+pipeline/logs/
 pipeline/temp_*.mp4
 
 # Generated markdown docs (optional - comment out if you want to track these)
